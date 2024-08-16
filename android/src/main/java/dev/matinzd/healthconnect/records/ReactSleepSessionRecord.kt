@@ -11,27 +11,6 @@ import dev.matinzd.healthconnect.utils.*
 import java.time.Instant
 
 class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
-  override fun parseWriteRecord(records: ReadableArray): List<SleepSessionRecord> {
-    return records.toMapList().map { map ->
-      SleepSessionRecord(
-        startTime = Instant.parse(map.getString("startTime")),
-        endTime = Instant.parse(map.getString("endTime")),
-        stages = map.getArray("stages")?.toMapList()?.map { stageMap ->
-          SleepSessionRecord.Stage(
-            startTime = Instant.parse(stageMap.getString("startTime")),
-            endTime = Instant.parse(stageMap.getString("endTime")),
-            stage = stageMap.getSafeInt("stage", SleepSessionRecord.STAGE_TYPE_UNKNOWN),
-          )
-        } ?: emptyList(),
-        startZoneOffset = null,
-        endZoneOffset = null,
-        title = map.getString("title"),
-        notes = map.getString("description"),
-        metadata = convertMetadataFromJSMap(map.getMap("metadata"))
-      )
-    }
-  }
-
   override fun parseRecord(record: SleepSessionRecord): WritableNativeMap {
     return WritableNativeMap().apply {
       putString("startTime", record.startTime.toString())

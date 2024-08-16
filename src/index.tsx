@@ -114,6 +114,7 @@ export function readRecords<T extends RecordType>(
 export function aggregateRecord<T extends AggregateResultRecordType>(
   request: AggregateRequest<T>
 ): Promise<AggregateResult<T>> {
+  // TODO: Handle blood pressure aggregate only available on Android 15+
   return HealthConnect.aggregateRecord(request);
 }
 

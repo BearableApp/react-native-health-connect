@@ -47,20 +47,6 @@ class ReactHealthRecord {
       return reactRecordTypeToClassMap[recordType]!!
     }
 
-    fun parseWriteRecords(reactRecords: ReadableArray): List<Record> {
-      val recordType = reactRecords.getMap(0).getString("recordType")
-
-      val recordClass = createReactHealthRecordInstance<Record>(recordType)
-
-      return recordClass.parseWriteRecord(reactRecords)
-    }
-
-    fun parseWriteResponse(response: InsertRecordsResponse?): WritableNativeArray {
-      val ids = WritableNativeArray()
-      response?.recordIdsList?.forEach { ids.pushString(it) }
-      return ids
-    }
-
     fun parseReadRequest(recordType: String, reactRequest: ReadableMap): ReadRecordsRequest<*> {
       return convertReactRequestOptionsFromJS(getRecordByType(recordType), reactRequest)
     }

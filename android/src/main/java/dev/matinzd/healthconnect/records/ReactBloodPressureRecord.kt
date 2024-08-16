@@ -11,22 +11,6 @@ import dev.matinzd.healthconnect.utils.*
 import java.time.Instant
 
 class ReactBloodPressureRecord : ReactHealthRecordImpl<BloodPressureRecord> {
-  override fun parseWriteRecord(records: ReadableArray): List<BloodPressureRecord> {
-    return records.toMapList().map {
-      BloodPressureRecord(
-        time = Instant.parse(it.getString("time")),
-        systolic = getBloodPressureFromJsMap(it.getMap("systolic")),
-        diastolic = getBloodPressureFromJsMap(it.getMap("diastolic")),
-        bodyPosition = it.getSafeInt("bodyPosition", BloodPressureRecord.BODY_POSITION_UNKNOWN),
-        measurementLocation = it.getSafeInt(
-          "measurementLocation", BloodPressureRecord.MEASUREMENT_LOCATION_UNKNOWN
-        ),
-        zoneOffset = null,
-        metadata = convertMetadataFromJSMap(it.getMap("metadata"))
-      )
-    }
-  }
-
   override fun parseRecord(record: BloodPressureRecord): WritableNativeMap {
     return WritableNativeMap().apply {
       putString("time", record.time.toString())
@@ -84,15 +68,6 @@ class ReactBloodPressureRecord : ReactHealthRecordImpl<BloodPressureRecord> {
     return WritableNativeMap().apply {
       putDouble("inMillimetersOfMercury", pressure.inMillimetersOfMercury)
     }
-  }
-
-  private fun getBloodPressureFromJsMap(bloodPressureMap: ReadableMap?): Pressure {
-    if (bloodPressureMap == null) {
-      throw InvalidBloodPressure()
-    }
-
-    val value = bloodPressureMap.getDouble("value")
-    return Pressure.millimetersOfMercury(value)
   }
 
   private fun getPressureMap(inMillimetersOfMercury: Double): WritableNativeMap {

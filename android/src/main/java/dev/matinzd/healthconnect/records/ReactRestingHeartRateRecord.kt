@@ -10,17 +10,6 @@ import dev.matinzd.healthconnect.utils.*
 import java.time.Instant
 
 class ReactRestingHeartRateRecord : ReactHealthRecordImpl<RestingHeartRateRecord> {
-  override fun parseWriteRecord(records: ReadableArray): List<RestingHeartRateRecord> {
-    return records.toMapList().map { map ->
-      RestingHeartRateRecord(
-        time = Instant.parse(map.getString("time")),
-        zoneOffset = null,
-        beatsPerMinute = map.getDouble("beatsPerMinute").toLong(),
-        metadata = convertMetadataFromJSMap(map.getMap("metadata"))
-      )
-    }
-  }
-
   override fun parseRecord(record: RestingHeartRateRecord): WritableNativeMap {
     return WritableNativeMap().apply {
       putString("time", record.time.toString())
