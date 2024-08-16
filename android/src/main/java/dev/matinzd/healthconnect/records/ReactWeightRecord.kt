@@ -10,17 +10,6 @@ import dev.matinzd.healthconnect.utils.*
 import java.time.Instant
 
 class ReactWeightRecord : ReactHealthRecordImpl<WeightRecord> {
-  override fun parseWriteRecord(records: ReadableArray): List<WeightRecord> {
-    return records.toMapList().map { map ->
-      WeightRecord(
-        time = Instant.parse(map.getString("time")),
-        weight = getMassFromJsMap(map.getMap("weight")),
-        zoneOffset = null,
-        metadata = convertMetadataFromJSMap(map.getMap("metadata"))
-      )
-    }
-  }
-
   override fun parseRecord(record: WeightRecord): WritableNativeMap {
     return WritableNativeMap().apply {
       putString("time", record.time.toString())

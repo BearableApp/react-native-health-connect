@@ -8,7 +8,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeMap
 
 interface ReactHealthRecordImpl<T : Record> {
-  fun parseWriteRecord(records: ReadableArray): List<T>
   fun parseRecord(record: T): WritableNativeMap
   fun getAggregateRequest(record: ReadableMap): AggregateRequest
   fun parseAggregationResult(record: AggregationResult): WritableNativeMap

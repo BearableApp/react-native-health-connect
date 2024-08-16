@@ -1,11 +1,10 @@
 import * as React from 'react';
 
-import { Button, StyleSheet, View } from 'react-native';
+import { Button, ScrollView, StyleSheet, Text } from 'react-native';
 import {
   aggregateRecord,
   getGrantedPermissions,
   initialize,
-  insertRecords,
   getSdkStatus,
   readRecords,
   requestPermission,
@@ -13,9 +12,9 @@ import {
   SdkAvailabilityStatus,
   openHealthConnectSettings,
   openHealthConnectDataManagement,
-  readRecord,
-  RecordingMethod,
-  DeviceType,
+  Permission,
+  RecordType,
+  AggregateResultRecordType,
 } from 'react-native-health-connect';
 
 const getLastWeekDate = (): Date => {
@@ -30,9 +29,49 @@ const getTodayDate = (): Date => {
   return new Date();
 };
 
-const random64BitString = () => {
-  return Math.floor(Math.random() * 0xffffffffffffffff).toString(16);
-};
+const availableRecordTypes: Permission[] = [
+  {
+    recordType: 'BloodPressure',
+    accessType: 'read',
+  },
+  {
+    recordType: 'BodyTemperature',
+    accessType: 'read',
+  },
+  {
+    recordType: 'HeartRate',
+    accessType: 'read',
+  },
+  {
+    recordType: 'RestingHeartRate',
+    accessType: 'read',
+  },
+  {
+    recordType: 'Steps',
+    accessType: 'read',
+  },
+  {
+    recordType: 'HeartRateVariabilityRmssd',
+    accessType: 'read',
+  },
+  {
+    recordType: 'Weight',
+    accessType: 'read',
+  },
+  {
+    recordType: 'SleepSession',
+    accessType: 'read',
+  },
+];
+
+const availableAggregateRecordTypes: AggregateResultRecordType[] = [
+  'BloodPressure',
+  'HeartRate',
+  'RestingHeartRate',
+  'Steps',
+  'Weight',
+  'SleepSession',
+];
 
 export default function App() {
   const initializeHealthConnect = async () => {
@@ -57,35 +96,8 @@ export default function App() {
     }
   };
 
-  const insertSampleData = () => {
-    insertRecords([
-      {
-        recordType: 'Steps',
-        count: 1000,
-        startTime: getLastWeekDate().toISOString(),
-        endTime: getTodayDate().toISOString(),
-        metadata: {
-          clientRecordId: random64BitString(),
-          recordingMethod:
-            RecordingMethod.RECORDING_METHOD_AUTOMATICALLY_RECORDED,
-          device: {
-            manufacturer: 'Google',
-            model: 'Pixel 4',
-            type: DeviceType.TYPE_PHONE,
-          },
-        },
-      },
-    ])
-      .then((ids) => {
-        console.log('Records inserted ', { ids });
-      })
-      .catch((err) => {
-        console.error('Error inserting records ', { err });
-      });
-  };
-
-  const readSampleData = () => {
-    readRecords('Steps', {
+  const readSampleData = (recordType: RecordType) => {
+    readRecords(recordType, {
       timeRangeFilter: {
         operator: 'between',
         startTime: getLastTwoWeeksDate().toISOString(),
@@ -100,19 +112,9 @@ export default function App() {
       });
   };
 
-  const readSampleDataSingle = () => {
-    readRecord('Steps', '40a67ecf-d929-4648-996e-e8d248727d95')
-      .then((result) => {
-        console.log('Retrieved record: ', JSON.stringify({ result }, null, 2));
-      })
-      .catch((err) => {
-        console.error('Error reading record ', { err });
-      });
-  };
-
-  const aggregateSampleData = () => {
+  const aggregateSampleData = (recordType: AggregateResultRecordType) => {
     aggregateRecord({
-      recordType: 'Steps',
+      recordType,
       timeRangeFilter: {
         operator: 'between',
         startTime: getLastWeekDate().toISOString(),
@@ -124,16 +126,7 @@ export default function App() {
   };
 
   const requestSamplePermissions = () => {
-    requestPermission([
-      {
-        accessType: 'read',
-        recordType: 'Steps',
-      },
-      {
-        accessType: 'write',
-        recordType: 'Steps',
-      },
-    ]).then((permissions) => {
+    requestPermission(availableRecordTypes).then((permissions) => {
       console.log('Granted permissions on request ', { permissions });
     });
   };
@@ -145,7 +138,9 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text>Setup</Text>
+
       <Button title="Initialize" onPress={initializeHealthConnect} />
       <Button
         title="Open Health Connect settings"
@@ -162,24 +157,27 @@ export default function App() {
       />
       <Button title="Get granted permissions" onPress={grantedPermissions} />
       <Button title="Revoke all permissions" onPress={revokeAllPermissions} />
-      <Button title="Insert sample data" onPress={insertSampleData} />
-      <Button title="Read sample data" onPress={readSampleData} />
-      <Button title="Read specific data" onPress={readSampleDataSingle} />
-      <Button title="Aggregate sample data" onPress={aggregateSampleData} />
-    </View>
+
+      <Text>Reading data</Text>
+
+      {availableRecordTypes.map(({ recordType }) => (
+        <Button key={recordType} title={`Read ${recordType} sample data`} onPress={() => readSampleData(recordType)} />
+      ))}
+
+      <Text>Reading aggregated data</Text>
+
+      {availableAggregateRecordTypes.map((recordType) => (
+        <Button key={recordType} title={`Aggregate ${recordType} sample data`} onPress={() => aggregateSampleData(recordType)} />
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    paddingVertical: 40,
     alignItems: 'center',
     justifyContent: 'center',
     rowGap: 16,
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
   },
 });

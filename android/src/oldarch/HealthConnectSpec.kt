@@ -27,23 +27,11 @@ abstract class HealthConnectSpec internal constructor(context: ReactApplicationC
   abstract fun revokeAllPermissions(promise: Promise);
 
   @ReactMethod
-  abstract fun insertRecords(records: ReadableArray, promise: Promise);
-
-  @ReactMethod
   abstract fun readRecords(recordType: String, options: ReadableMap, promise: Promise);
-
-  @ReactMethod
-  abstract fun readRecord(recordType: String, recordId: String, promise: Promise);
 
   @ReactMethod
   abstract fun aggregateRecord(record: ReadableMap, promise: Promise);
 
   @ReactMethod
   abstract fun getChanges(options: ReadableMap, promise: Promise);
-
-  @ReactMethod
-  abstract fun deleteRecordsByUuids(recordType: String, recordIdsList: ReadableArray, clientRecordIdsList: ReadableArray, promise: Promise);
-
-  @ReactMethod
-  abstract fun deleteRecordsByTimeRange(recordType: String, timeRangeFilter: ReadableMap, promise: Promise);
 }

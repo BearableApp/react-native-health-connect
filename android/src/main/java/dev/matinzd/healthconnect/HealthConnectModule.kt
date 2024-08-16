@@ -51,18 +51,8 @@ class HealthConnectModule internal constructor(context: ReactApplicationContext)
   }
 
   @ReactMethod
-  override fun insertRecords(records: ReadableArray, promise: Promise) {
-    return manager.insertRecords(records, promise)
-  }
-
-  @ReactMethod
   override fun readRecords(recordType: String, options: ReadableMap, promise: Promise) {
     return manager.readRecords(recordType, options, promise)
-  }
-
-  @ReactMethod
-  override fun readRecord(recordType: String, recordId: String, promise: Promise) {
-    return manager.readRecord(recordType, recordId, promise)
   }
 
   @ReactMethod
@@ -73,25 +63,6 @@ class HealthConnectModule internal constructor(context: ReactApplicationContext)
   @ReactMethod
   override fun getChanges(options: ReadableMap, promise: Promise) {
     return manager.getChanges(options, promise)
-  }
-
-  @ReactMethod
-  override fun deleteRecordsByUuids(
-    recordType: String,
-    recordIdsList: ReadableArray,
-    clientRecordIdsList: ReadableArray,
-    promise: Promise
-  ) {
-    return manager.deleteRecordsByUuids(recordType, recordIdsList, clientRecordIdsList, promise)
-  }
-
-  @ReactMethod
-  override fun deleteRecordsByTimeRange(
-    recordType: String,
-    timeRangeFilter: ReadableMap,
-    promise: Promise
-  ) {
-    return manager.deleteRecordsByTimeRange(recordType, timeRangeFilter, promise)
   }
 
   companion object {

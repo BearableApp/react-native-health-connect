@@ -139,12 +139,12 @@ const readSampleData = async () => {
 
   // request permissions
   const grantedPermissions = await requestPermission([
-    { accessType: 'read', recordType: 'ActiveCaloriesBurned' },
+    { accessType: 'read', recordType: 'Steps' },
   ]);
 
   // check if granted
 
-  const { records } = await readRecords('ActiveCaloriesBurned', {
+  const { records } = await readRecords('Steps', {
     timeRangeFilter: {
       operator: 'between',
       startTime: '2023-01-09T12:00:00.405Z',

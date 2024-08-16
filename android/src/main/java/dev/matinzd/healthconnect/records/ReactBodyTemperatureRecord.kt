@@ -10,28 +10,12 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.utils.AggregationNotSupported
 import dev.matinzd.healthconnect.utils.InvalidTemperature
-import dev.matinzd.healthconnect.utils.convertMetadataFromJSMap
 import dev.matinzd.healthconnect.utils.convertMetadataToJSMap
 import dev.matinzd.healthconnect.utils.getSafeInt
 import dev.matinzd.healthconnect.utils.toMapList
 import java.time.Instant
 
 class ReactBodyTemperatureRecord : ReactHealthRecordImpl<BodyTemperatureRecord> {
-  override fun parseWriteRecord(records: ReadableArray): List<BodyTemperatureRecord> {
-    return records.toMapList().map {
-      BodyTemperatureRecord(
-        time = Instant.parse(it.getString("time")),
-        zoneOffset = null,
-        temperature = getTemperatureFromJsMap(it.getMap("temperature")),
-        measurementLocation = it.getSafeInt(
-          "measurementLocation",
-          BodyTemperatureMeasurementLocation.MEASUREMENT_LOCATION_UNKNOWN
-        ),
-        metadata = convertMetadataFromJSMap(it.getMap("metadata"))
-      )
-    }
-  }
-
   override fun parseRecord(record: BodyTemperatureRecord): WritableNativeMap {
     return WritableNativeMap().apply {
       putString("time", record.time.toString())
@@ -47,19 +31,6 @@ class ReactBodyTemperatureRecord : ReactHealthRecordImpl<BodyTemperatureRecord> 
 
   override fun parseAggregationResult(record: AggregationResult): WritableNativeMap {
     throw AggregationNotSupported()
-  }
-
-  private fun getTemperatureFromJsMap(temperatureMap: ReadableMap?): Temperature {
-    if (temperatureMap == null) {
-      throw InvalidTemperature()
-    }
-
-    val value = temperatureMap.getDouble("value")
-    return when (temperatureMap.getString("unit")) {
-      "fahrenheit" -> Temperature.fahrenheit(value)
-      "celsius" -> Temperature.celsius(value)
-      else -> Temperature.celsius(value)
-    }
   }
 
   private fun temperatureToJsMap(temperature: Temperature): WritableNativeMap {

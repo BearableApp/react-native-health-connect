@@ -10,19 +10,6 @@ import dev.matinzd.healthconnect.utils.*
 import java.time.Instant
 
 class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
-  override fun parseWriteRecord(records: ReadableArray): List<StepsRecord> {
-    return records.toMapList().map { map ->
-      StepsRecord(
-        startTime = Instant.parse(map.getString("startTime")),
-        endTime = Instant.parse(map.getString("endTime")),
-        startZoneOffset = null,
-        endZoneOffset = null,
-        count = map.getDouble("count").toLong(),
-        metadata = convertMetadataFromJSMap(map.getMap("metadata"))
-      )
-    }
-  }
-
   override fun parseRecord(record: StepsRecord): WritableNativeMap {
     return WritableNativeMap().apply {
       putString("startTime", record.startTime.toString())
