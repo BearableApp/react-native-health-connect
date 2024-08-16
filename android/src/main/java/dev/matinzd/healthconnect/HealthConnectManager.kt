@@ -88,20 +88,6 @@ class HealthConnectManager(private val applicationContext: ReactApplicationConte
     }
   }
 
-  fun insertRecords(reactRecords: ReadableArray, promise: Promise) {
-    throwUnlessClientIsAvailable(promise) {
-      coroutineScope.launch {
-        try {
-          val records = ReactHealthRecord.parseWriteRecords(reactRecords)
-          val response = healthConnectClient.insertRecords(records)
-          promise.resolve(ReactHealthRecord.parseWriteResponse(response))
-        } catch (e: Exception) {
-          promise.rejectWithException(e)
-        }
-      }
-    }
-  }
-
   fun readRecords(recordType: String, options: ReadableMap, promise: Promise) {
     throwUnlessClientIsAvailable(promise) {
       coroutineScope.launch {
@@ -109,20 +95,6 @@ class HealthConnectManager(private val applicationContext: ReactApplicationConte
           val request = ReactHealthRecord.parseReadRequest(recordType, options)
           val response = healthConnectClient.readRecords(request)
           promise.resolve(ReactHealthRecord.parseRecords(recordType, response))
-        } catch (e: Exception) {
-          promise.rejectWithException(e)
-        }
-      }
-    }
-  }
-
-  fun readRecord(recordType: String, recordId: String, promise: Promise) {
-    throwUnlessClientIsAvailable(promise) {
-      coroutineScope.launch {
-        try {
-          val record = ReactHealthRecord.getRecordByType(recordType)
-          val response = healthConnectClient.readRecord(record, recordId)
-          promise.resolve(ReactHealthRecord.parseRecord(recordType, response))
         } catch (e: Exception) {
           promise.rejectWithException(e)
         }
@@ -185,42 +157,6 @@ class HealthConnectManager(private val applicationContext: ReactApplicationConte
           })
         } catch (e: Exception) {
           promise.rejectWithException(e)
-        }
-      }
-    }
-  }
-
-  fun deleteRecordsByUuids(
-    recordType: String,
-    recordIdsList: ReadableArray,
-    clientRecordIdsList: ReadableArray,
-    promise: Promise
-  ) {
-    throwUnlessClientIsAvailable(promise) {
-      coroutineScope.launch {
-        val record = reactRecordTypeToClassMap[recordType]
-        if (record != null) {
-          healthConnectClient.deleteRecords(
-            recordType = record,
-            recordIdsList = recordIdsList.toArrayList().mapNotNull { it.toString() }.toList(),
-            clientRecordIdsList = if (clientRecordIdsList.size() > 0) clientRecordIdsList.toArrayList()
-              .mapNotNull { it.toString() }.toList() else emptyList()
-          )
-        }
-      }
-    }
-  }
-
-  fun deleteRecordsByTimeRange(
-    recordType: String, timeRangeFilter: ReadableMap, promise: Promise
-  ) {
-    throwUnlessClientIsAvailable(promise) {
-      coroutineScope.launch {
-        val record = reactRecordTypeToClassMap[recordType]
-        if (record != null) {
-          healthConnectClient.deleteRecords(
-            recordType = record, timeRangeFilter = timeRangeFilter.getTimeRangeFilter()
-          )
         }
       }
     }

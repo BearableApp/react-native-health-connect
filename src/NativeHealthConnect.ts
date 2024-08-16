@@ -1,6 +1,7 @@
 import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
-import type { HealthConnectRecord, Permission } from './types';
+import type { Permission } from './types';
+
 
 type ReadRecordsOptions = {
   startTime: string;
@@ -23,9 +24,7 @@ export interface Spec extends TurboModule {
   ): Promise<Permission[]>;
   getGrantedPermissions(): Promise<Permission[]>;
   revokeAllPermissions(): Promise<void>;
-  insertRecords(records: HealthConnectRecord[]): Promise<string[]>;
   readRecords(recordType: string, options: ReadRecordsOptions): Promise<{}>;
-  readRecord(recordType: string, recordId: string): Promise<{}>;
   aggregateRecord(record: {
     recordType: string;
     startTime: string;
@@ -36,15 +35,6 @@ export interface Spec extends TurboModule {
     recordTypes?: string[];
     dataOriginFilters?: string[];
   }): Promise<{}>;
-  deleteRecordsByUuids(
-    recordType: string,
-    recordIdsList: string[],
-    clientRecordIdsList: string[]
-  ): Promise<void>;
-  deleteRecordsByTimeRange(
-    recordType: string,
-    timeRangeFilter: Object
-  ): Promise<void>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('HealthConnect');
