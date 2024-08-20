@@ -1,0 +1,1 @@
+{"version":3,"names":["HealthConnectError","Error","constructor","message","method"],"sourceRoot":"../../src","sources":["errors.ts"],"mappings":";;;;;;AAAO,MAAMA,kBAAkB,SAASC,KAAK,CAAC;EAC5CC,WAAW,CAACC,OAAe,EAAEC,MAAc,EAAE;IAC3C,KAAK,CAAE,iBAAgBA,MAAO,KAAID,OAAQ,EAAC,CAAC;EAC9C;AACF;AAAC"}
