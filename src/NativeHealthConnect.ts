@@ -2,7 +2,6 @@ import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
 import type { Permission } from './types';
 
-
 type ReadRecordsOptions = {
   startTime: string;
   endTime: string;
