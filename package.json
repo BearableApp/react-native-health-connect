@@ -8,13 +8,13 @@
   "types": "lib/typescript/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
-  "repository": "https://github.com/matinzd/react-native-health-connect",
+  "repository": "https://github.com/BearableApp/react-native-health-connect",
   "author": "matinzd <me@matinzd.dev> (https://github.com/matinzd)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/matinzd/react-native-health-connect/issues"
   },
-  "homepage": "https://github.com/matinzd/react-native-health-connect#readme",
+  "homepage": "https://github.com/BearableApp/react-native-health-connect#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
@@ -23,7 +23,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint ./src",
     "prepack": "bob build",
-    "release": "release-it",
+    "release": "./release.sh",
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build"
@@ -98,10 +98,10 @@
       "tagName": "v${version}"
     },
     "npm": {
-      "publish": true
+      "publish": false
     },
     "github": {
-      "release": true
+      "release": false
     },
     "plugins": {
       "@release-it/conventional-changelog": {
