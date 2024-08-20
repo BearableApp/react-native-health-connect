@@ -1,3 +1,5 @@
+import type { RecordType } from './types';
+
 export const SdkAvailabilityStatus = {
   SDK_UNAVAILABLE: 1,
   SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED: 2,
@@ -28,4 +30,15 @@ export const SleepStageType = {
   LIGHT: 4,
   DEEP: 5,
   REM: 6,
+} as const;
+
+export const RecordTypes: Record<string, RecordType> = {
+  BLOOD_PRESSURE: 'BloodPressure',
+  BODY_TEMPERATURE: 'BodyTemperature',
+  HEART_RATE: 'HeartRate',
+  RESTING_HEART_RATE: 'RestingHeartRate',
+  STEPS: 'Steps',
+  HEART_RATE_VARIABILITY: 'HeartRateVariabilityRmssd',
+  WEIGHT: 'Weight',
+  SLEEP: 'SleepSession',
 } as const;
