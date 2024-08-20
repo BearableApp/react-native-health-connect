@@ -1,8 +1,4 @@
-import type {
-  MassResult,
-  PressureResult,
-  TimeRangeFilter,
-} from './base.types';
+import type { MassResult, PressureResult, TimeRangeFilter } from './base.types';
 
 interface BaseAggregate {
   dataOrigins: string[];

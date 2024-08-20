@@ -1,7 +1,4 @@
-import type {
-  MassResult,
-  PressureResult,
-} from './base.types';
+import type { MassResult, PressureResult } from './base.types';
 import type {
   BloodPressureRecord,
   BodyTemperatureRecord,
