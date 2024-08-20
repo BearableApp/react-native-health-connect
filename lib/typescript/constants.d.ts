@@ -1,3 +1,4 @@
+import type { RecordType } from './types';
 export declare const SdkAvailabilityStatus: {
     readonly SDK_UNAVAILABLE: 1;
     readonly SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED: 2;
@@ -26,4 +27,5 @@ export declare const SleepStageType: {
     readonly DEEP: 5;
     readonly REM: 6;
 };
+export declare const RecordTypes: Record<string, RecordType>;
 //# sourceMappingURL=constants.d.ts.map
