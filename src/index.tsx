@@ -9,9 +9,8 @@ import type {
   ReadRecordsResult,
   GetChangesRequest,
   GetChangesResults,
-  ReadStepRecordsOptions,
-  ReadStepRecordsResult,
   BucketedRequestOptions,
+  BucketedRecordsResult,
 } from './types';
 
 const LINKING_ERROR =
@@ -130,7 +129,7 @@ export function getChanges(
 export function readBucketedRecords(
   recordType: RecordType,
   options: BucketedRequestOptions
-): Promise<ReadStepRecordsResult> {
+): Promise<BucketedRecordsResult> {
   return HealthConnect.readBucketedRecords(recordType, options);
 }
 
