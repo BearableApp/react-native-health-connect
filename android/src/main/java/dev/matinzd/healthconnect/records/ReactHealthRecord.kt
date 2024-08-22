@@ -1,7 +1,9 @@
 package dev.matinzd.healthconnect.records
 
 import androidx.health.connect.client.aggregate.AggregationResult
+import androidx.health.connect.client.aggregate.AggregationResultGroupedByPeriod
 import androidx.health.connect.client.records.Record
+import androidx.health.connect.client.request.AggregateGroupByPeriodRequest
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.response.InsertRecordsResponse
@@ -63,6 +65,18 @@ class ReactHealthRecord {
       return recordClass.parseAggregationResult(result)
     }
 
+    fun getBucketedRequest(recordType: String, reactRequest: ReadableMap): AggregateGroupByPeriodRequest {
+      val recordClass = createReactHealthRecordInstance<Record>(recordType)
+
+      return recordClass.getBucketedRequest(reactRequest)
+    }
+
+    fun parseBucketedResult(recordType: String, result: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
+      val recordClass = createReactHealthRecordInstance<Record>(recordType)
+
+      return recordClass.parseBucketedResult(result)
+    }
+
     fun parseRecords(
       recordType: String,
       response: ReadRecordsResponse<out Record>
@@ -93,6 +107,11 @@ class ReactHealthRecord {
       val reactRecord = reactRecordClass.parseRecord(record)
       reactRecord.putString("recordType", reactClassToReactTypeMap[reactRecordClass.javaClass])
       return reactRecord
+    }
+
+    fun getResultType(recordType: String): String {
+      val recordClass = createReactHealthRecordInstance<Record>(recordType)
+      return recordClass.getResultType()
     }
   }
 }

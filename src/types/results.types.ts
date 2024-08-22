@@ -10,6 +10,7 @@ import type {
   StepsRecord,
   WeightRecord,
 } from './records.types';
+import { ResultRecordTypes } from '../constants';
 
 type Identity<T> = { [P in keyof T]: T[P] };
 
@@ -68,3 +69,15 @@ export type ReadRecordsResult<T extends RecordType> = {
   records: RecordResult<T>[];
   pageToken?: string;
 };
+
+type ResultRecordType =
+  (typeof ResultRecordTypes)[keyof typeof ResultRecordTypes];
+
+export type BucketedRecordsResult = {
+  dateKey: string;
+  entry: {
+    type: ResultRecordType;
+    value: string;
+    family: 'HEALTH';
+  };
+}[];

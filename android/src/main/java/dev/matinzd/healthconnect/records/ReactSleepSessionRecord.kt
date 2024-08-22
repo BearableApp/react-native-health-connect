@@ -1,7 +1,9 @@
 package dev.matinzd.healthconnect.records
 
 import androidx.health.connect.client.aggregate.AggregationResult
+import androidx.health.connect.client.aggregate.AggregationResultGroupedByPeriod
 import androidx.health.connect.client.records.SleepSessionRecord
+import androidx.health.connect.client.request.AggregateGroupByPeriodRequest
 import androidx.health.connect.client.request.AggregateRequest
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
@@ -11,6 +13,10 @@ import dev.matinzd.healthconnect.utils.*
 import java.time.Instant
 
 class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
+  override fun getResultType(): String {
+    return "SLEEP"
+  }
+
   override fun parseRecord(record: SleepSessionRecord): WritableNativeMap {
     return WritableNativeMap().apply {
       putString("startTime", record.startTime.toString())
@@ -48,5 +54,13 @@ class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
       )
       putArray("dataOrigins", convertDataOriginsToJsArray(record.dataOrigins))
     }
+  }
+
+  override fun getBucketedRequest(record: ReadableMap): AggregateGroupByPeriodRequest {
+    throw AggregationNotSupported()
+  }
+
+  override fun parseBucketedResult(records: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
+    throw AggregationNotSupported()
   }
 }

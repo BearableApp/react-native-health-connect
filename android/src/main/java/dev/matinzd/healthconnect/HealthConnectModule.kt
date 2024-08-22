@@ -65,6 +65,11 @@ class HealthConnectModule internal constructor(context: ReactApplicationContext)
     return manager.getChanges(options, promise)
   }
 
+  @ReactMethod
+  override fun readBucketedRecords(recordType: String, options: ReadableMap, promise: Promise) {
+    return manager.readBucketedRecords(recordType, options, promise)
+  }
+
   companion object {
     const val NAME = "HealthConnect"
   }

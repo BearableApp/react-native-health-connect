@@ -1,7 +1,9 @@
 package dev.matinzd.healthconnect.records
 
 import androidx.health.connect.client.aggregate.AggregationResult
+import androidx.health.connect.client.aggregate.AggregationResultGroupedByPeriod
 import androidx.health.connect.client.records.HeartRateRecord
+import androidx.health.connect.client.request.AggregateGroupByPeriodRequest
 import androidx.health.connect.client.request.AggregateRequest
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
@@ -11,6 +13,10 @@ import dev.matinzd.healthconnect.utils.*
 import java.time.Instant
 
 class ReactHeartRateRecord : ReactHealthRecordImpl<HeartRateRecord> {
+  override fun getResultType(): String {
+    return "HEART"
+  }
+
   override fun parseRecord(record: HeartRateRecord): WritableNativeMap {
     return WritableNativeMap().apply {
       putString("startTime", record.startTime.toString())
@@ -49,5 +55,13 @@ class ReactHeartRateRecord : ReactHealthRecordImpl<HeartRateRecord> {
       putDouble("MEASUREMENTS_COUNT", record[HeartRateRecord.MEASUREMENTS_COUNT]?.toDouble() ?: 0.0)
       putArray("dataOrigins", convertDataOriginsToJsArray(record.dataOrigins))
     }
+  }
+
+  override fun getBucketedRequest(record: ReadableMap): AggregateGroupByPeriodRequest {
+    throw AggregationNotSupported()
+  }
+
+  override fun parseBucketedResult(records: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
+    throw AggregationNotSupported()
   }
 }

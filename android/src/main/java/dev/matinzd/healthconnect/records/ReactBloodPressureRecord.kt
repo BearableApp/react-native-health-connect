@@ -1,16 +1,23 @@
 package dev.matinzd.healthconnect.records
 
 import androidx.health.connect.client.aggregate.AggregationResult
+import androidx.health.connect.client.aggregate.AggregationResultGroupedByPeriod
 import androidx.health.connect.client.records.BloodPressureRecord
+import androidx.health.connect.client.request.AggregateGroupByPeriodRequest
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.units.Pressure
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.utils.*
 import java.time.Instant
 
 class ReactBloodPressureRecord : ReactHealthRecordImpl<BloodPressureRecord> {
+  override fun getResultType(): String {
+    return "PRESSURE"
+  }
+
   override fun parseRecord(record: BloodPressureRecord): WritableNativeMap {
     return WritableNativeMap().apply {
       putString("time", record.time.toString())
@@ -62,6 +69,14 @@ class ReactBloodPressureRecord : ReactHealthRecordImpl<BloodPressureRecord> {
       )
       putArray("dataOrigins", convertDataOriginsToJsArray(record.dataOrigins))
     }
+  }
+
+  override fun getBucketedRequest(record: ReadableMap): AggregateGroupByPeriodRequest {
+    throw AggregationNotSupported()
+  }
+
+  override fun parseBucketedResult(records: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
+    throw AggregationNotSupported()
   }
 
   private fun bloodPressureToJsMap(pressure: Pressure): WritableNativeMap {
