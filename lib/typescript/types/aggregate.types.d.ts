@@ -47,5 +47,9 @@ export interface AggregateRequest<T extends AggregateResultRecordType> {
     timeRangeFilter: TimeRangeFilter;
     dataOriginFilter?: string[];
 }
+export interface BucketedRequestOptions {
+    timeRangeFilter: TimeRangeFilter;
+    bucketPeriod?: 'day' | 'month' | 'year';
+}
 export {};
 //# sourceMappingURL=aggregate.types.d.ts.map

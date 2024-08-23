@@ -28,4 +28,5 @@ export declare const SleepStageType: {
     readonly REM: 6;
 };
 export declare const RecordTypes: Record<string, RecordType>;
+export declare const ResultRecordTypes: Record<string, string>;
 //# sourceMappingURL=constants.d.ts.map

@@ -1,4 +1,4 @@
-import type { AggregateRequest, AggregateResult, AggregateResultRecordType, Permission, ReadRecordsOptions, RecordType, ReadRecordsResult, GetChangesRequest, GetChangesResults } from './types';
+import type { AggregateRequest, AggregateResult, AggregateResultRecordType, Permission, ReadRecordsOptions, RecordType, ReadRecordsResult, GetChangesRequest, GetChangesResults, BucketedRequestOptions, BucketedRecordsResult } from './types';
 /**
  * Gets the status of the Health Connect SDK
  * @param providerPackageName the package name of the Health Connect provider
@@ -30,6 +30,7 @@ export declare function revokeAllPermissions(): void;
 export declare function readRecords<T extends RecordType>(recordType: T, options: ReadRecordsOptions): Promise<ReadRecordsResult<T>>;
 export declare function aggregateRecord<T extends AggregateResultRecordType>(request: AggregateRequest<T>): Promise<AggregateResult<T>>;
 export declare function getChanges(request: GetChangesRequest): Promise<GetChangesResults>;
+export declare function readBucketedRecords(recordType: RecordType, options: BucketedRequestOptions): Promise<BucketedRecordsResult>;
 export * from './constants';
 export * from './types';
 //# sourceMappingURL=index.d.ts.map
