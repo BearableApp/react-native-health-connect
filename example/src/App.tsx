@@ -16,7 +16,6 @@ import {
   RecordType,
   AggregateResultRecordType,
   readBucketedRecords,
-  RecordTypes,
 } from 'react-native-health-connect';
 
 const getLastWeekDate = (): Date => {

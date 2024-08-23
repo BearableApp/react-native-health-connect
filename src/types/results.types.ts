@@ -10,7 +10,7 @@ import type {
   StepsRecord,
   WeightRecord,
 } from './records.types';
-import { ResultRecordTypes } from '../constants';
+import type { ResultRecordTypes } from '../constants';
 
 type Identity<T> = { [P in keyof T]: T[P] };
 
