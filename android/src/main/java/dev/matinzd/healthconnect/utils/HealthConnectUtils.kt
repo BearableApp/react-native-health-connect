@@ -14,6 +14,7 @@ import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.records.*
 import java.time.Instant
+import java.time.Period
 import java.time.ZoneOffset
 import kotlin.reflect.KClass
 
@@ -122,6 +123,18 @@ fun ReadableMap.getTimeRangeFilter(key: String? = null): TimeRangeFilter {
 
       return TimeRangeFilter.between(startTime, endTime)
     }
+  }
+}
+
+fun ReadableMap.getPeriod(key: String): Period {
+  val period = this.getString(key)
+    ?: throw Exception("Period should be provided")
+
+  return when (period) {
+    "day" -> Period.ofDays(1)
+    "month" -> Period.ofMonths(1)
+    "year" -> Period.ofYears(1)
+    else -> throw Exception("Invalid period type")
   }
 }
 

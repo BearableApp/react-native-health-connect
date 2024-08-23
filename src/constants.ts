@@ -42,3 +42,14 @@ export const RecordTypes: Record<string, RecordType> = {
   WEIGHT: 'Weight',
   SLEEP: 'SleepSession',
 } as const;
+
+export const ResultRecordTypes: Record<string, string> = {
+  BODY_TEMPERATURE: 'BODY_TEMPERATURE',
+  HEART_RATE_VARIABILITY: 'HEART_RATE_VARIABILITY',
+  HEART: 'HEART',
+  PRESSURE: 'PRESSURE',
+  RESTING_HEART_RATE: 'RESTING_HEART_RATE',
+  SLEEP: 'SLEEP',
+  STEPS: 'STEPS',
+  WEIGHT: 'WEIGHT',
+} as const;

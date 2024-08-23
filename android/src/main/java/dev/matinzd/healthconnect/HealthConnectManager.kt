@@ -1,9 +1,12 @@
 package dev.matinzd.healthconnect
 
 import android.content.Intent
+import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.changes.DeletionChange
 import androidx.health.connect.client.changes.UpsertionChange
+import androidx.health.connect.client.request.AggregateGroupByPeriodRequest
+import androidx.health.connect.client.time.TimeRangeFilter
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
@@ -21,6 +24,9 @@ import dev.matinzd.healthconnect.utils.rejectWithException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 class HealthConnectManager(private val applicationContext: ReactApplicationContext) {
   private lateinit var healthConnectClient: HealthConnectClient
@@ -155,6 +161,20 @@ class HealthConnectManager(private val applicationContext: ReactApplicationConte
             putBoolean("hasMore", changesResponse.hasMore)
             putBoolean("changesTokenExpired", changesResponse.changesTokenExpired)
           })
+        } catch (e: Exception) {
+          promise.rejectWithException(e)
+        }
+      }
+    }
+  }
+
+  fun readBucketedRecords(recordType: String, options: ReadableMap, promise: Promise) {
+    throwUnlessClientIsAvailable(promise) {
+      coroutineScope.launch {
+        try {
+          val request = ReactHealthRecord.getBucketedRequest(recordType, options)
+          val response = healthConnectClient.aggregateGroupByPeriod(request)
+          promise.resolve(ReactHealthRecord.parseBucketedResult(recordType, response))
         } catch (e: Exception) {
           promise.rejectWithException(e)
         }

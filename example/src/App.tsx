@@ -15,6 +15,8 @@ import {
   Permission,
   RecordType,
   AggregateResultRecordType,
+  readBucketedRecords,
+  RecordTypes,
 } from 'react-native-health-connect';
 
 const getLastWeekDate = (): Date => {
@@ -137,6 +139,22 @@ export default function App() {
     });
   };
 
+  const getBucketedRecords = async (recordType: RecordType) => {
+    try {
+      const result = await readBucketedRecords(recordType, {
+        timeRangeFilter: {
+          operator: 'between',
+          startTime: getLastWeekDate().toISOString(),
+          endTime: getTodayDate().toISOString(),
+        },
+      });
+
+      console.log('result', result);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text>Setup</Text>
@@ -158,16 +176,37 @@ export default function App() {
       <Button title="Get granted permissions" onPress={grantedPermissions} />
       <Button title="Revoke all permissions" onPress={revokeAllPermissions} />
 
+      <Text>Reading bucketed data</Text>
+
+      <Button
+        title="Read bucketed steps"
+        onPress={() => getBucketedRecords('Steps')}
+      />
+
+      {/* Not supported */}
+      <Button
+        title="Read bucketed heart rate"
+        onPress={() => getBucketedRecords('HeartRate')}
+      />
+
       <Text>Reading data</Text>
 
       {availableRecordTypes.map(({ recordType }) => (
-        <Button key={recordType} title={`Read ${recordType} sample data`} onPress={() => readSampleData(recordType)} />
+        <Button
+          key={recordType}
+          title={`Read ${recordType} sample data`}
+          onPress={() => readSampleData(recordType)}
+        />
       ))}
 
       <Text>Reading aggregated data</Text>
 
       {availableAggregateRecordTypes.map((recordType) => (
-        <Button key={recordType} title={`Aggregate ${recordType} sample data`} onPress={() => aggregateSampleData(recordType)} />
+        <Button
+          key={recordType}
+          title={`Aggregate ${recordType} sample data`}
+          onPress={() => aggregateSampleData(recordType)}
+        />
       ))}
     </ScrollView>
   );
