@@ -69,7 +69,7 @@ class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
 
           if (totalSteps != null) {
             pushMap(WritableNativeMap().apply {
-              putString("date", date)
+              putString("dateKey", date)
               putMap("entry", WritableNativeMap().apply {
                 putString("type", getResultType())
                 putString("value", totalSteps.toString())
