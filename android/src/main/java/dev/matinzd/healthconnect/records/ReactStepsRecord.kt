@@ -13,6 +13,8 @@ import dev.matinzd.healthconnect.utils.*
 import java.time.Instant
 import java.time.Period
 import java.time.format.DateTimeFormatter
+import java.time.ZoneId
+import java.util.TimeZone
 
 class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
   override fun getResultType(): String {
@@ -60,24 +62,33 @@ class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
   }
 
   override fun parseBucketedResult(records: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
-    return WritableNativeArray().apply {
-        for (daysRecord in records) {
-          // The result may be null if no data is available in the time range
-          val totalSteps = daysRecord.result[StepsRecord.COUNT_TOTAL]
-          // Parse start time in string format YYYYMMDD
-          val date = daysRecord.startTime.format(DateTimeFormatter.BASIC_ISO_DATE)
+    // Get the user's timezone from the system
+    val userTimeZone = ZoneId.systemDefault()
 
-          if (totalSteps != null) {
-            pushMap(WritableNativeMap().apply {
-              putString("dateKey", date)
-              putMap("entry", WritableNativeMap().apply {
-                putString("type", getResultType())
-                putString("value", totalSteps.toString())
-                putString("family", "HEALTH")
-              })
+    return WritableNativeArray().apply {
+      for (daysRecord in records) {
+        // The result may be null if no data is available in the time range
+        val totalSteps = daysRecord.result[StepsRecord.COUNT_TOTAL]
+
+        // If timezone offset is negative use start time else use end time
+        val zonedStartTime = daysRecord.startTime.atZone(userTimeZone).toInstant().toEpochMilli()
+        val offset = TimeZone.getDefault().getOffset(zonedStartTime)
+        val date = if (offset > 0) daysRecord.endTime else daysRecord.startTime
+        
+        // Parse date time in string format YYYYMMDD
+        val dateKey = date.format(DateTimeFormatter.BASIC_ISO_DATE)
+
+        if (totalSteps != null) {
+          pushMap(WritableNativeMap().apply {
+            putString("dateKey", dateKey)
+            putMap("entry", WritableNativeMap().apply {
+              putString("type", getResultType())
+              putString("value", totalSteps.toString())
+              putString("family", "HEALTH")
             })
-          }
+          })
         }
       }
+    }
   }
 }
