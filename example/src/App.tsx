@@ -1,4 +1,5 @@
 import * as React from 'react';
+import moment from 'moment';
 
 import { Button, ScrollView, StyleSheet, Text } from 'react-native';
 import {
@@ -140,11 +141,18 @@ export default function App() {
 
   const getBucketedRecords = async (recordType: RecordType) => {
     try {
+      // Want to keep offset on the iso string to account for timezones
+      const startTime = moment()
+        .subtract(1, 'week')
+        .startOf('day')
+        .toISOString(true);
+      const endTime = moment().endOf('day').toISOString(true);
+
       const result = await readBucketedRecords(recordType, {
         timeRangeFilter: {
           operator: 'between',
-          startTime: getLastWeekDate().toISOString(),
-          endTime: getTodayDate().toISOString(),
+          startTime,
+          endTime,
         },
       });
 

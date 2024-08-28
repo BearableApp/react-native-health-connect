@@ -10,7 +10,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.utils.*
-import java.time.Instant
 import java.time.Period
 import java.time.format.DateTimeFormatter
 
@@ -61,23 +60,23 @@ class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
 
   override fun parseBucketedResult(records: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
     return WritableNativeArray().apply {
-        for (daysRecord in records) {
-          // The result may be null if no data is available in the time range
-          val totalSteps = daysRecord.result[StepsRecord.COUNT_TOTAL]
-          // Parse start time in string format YYYYMMDD
-          val date = daysRecord.startTime.format(DateTimeFormatter.BASIC_ISO_DATE)
+      for (daysRecord in records) {
+        // The result may be null if no data is available in the time range
+        val totalSteps = daysRecord.result[StepsRecord.COUNT_TOTAL]
+        // Parse date time in string format YYYYMMDD
+        val dateKey = daysRecord.startTime.format(DateTimeFormatter.BASIC_ISO_DATE)
 
-          if (totalSteps != null) {
-            pushMap(WritableNativeMap().apply {
-              putString("dateKey", date)
-              putMap("entry", WritableNativeMap().apply {
-                putString("type", getResultType())
-                putString("value", totalSteps.toString())
-                putString("family", "HEALTH")
-              })
+        if (totalSteps != null) {
+          pushMap(WritableNativeMap().apply {
+            putString("dateKey", dateKey)
+            putMap("entry", WritableNativeMap().apply {
+              putString("type", getResultType())
+              putString("value", totalSteps.toString())
+              putString("family", "HEALTH")
             })
-          }
+          })
         }
       }
+    }
   }
 }
