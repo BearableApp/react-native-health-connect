@@ -14,8 +14,10 @@ import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.records.*
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.Period
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import kotlin.reflect.KClass
 
 fun <T : Record> convertReactRequestOptionsFromJS(
@@ -89,10 +91,10 @@ fun ReadableMap.getTimeRangeFilter(key: String? = null): TimeRangeFilter {
   val operator = timeRangeFilter.getString("operator")
 
   val startTime =
-    if (timeRangeFilter.hasKey("startTime")) Instant.parse(timeRangeFilter.getString("startTime")) else null
+    if (timeRangeFilter.hasKey("startTime")) LocalDateTime.parse(timeRangeFilter.getString("startTime"), DateTimeFormatter.ISO_DATE_TIME) else null
 
   val endTime =
-    if (timeRangeFilter.hasKey("endTime")) Instant.parse(timeRangeFilter.getString("endTime")) else null
+    if (timeRangeFilter.hasKey("endTime"))  LocalDateTime.parse(timeRangeFilter.getString("endTime"), DateTimeFormatter.ISO_DATE_TIME) else null
 
   when (operator) {
     "between" -> {
