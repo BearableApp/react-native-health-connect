@@ -68,5 +68,5 @@ export interface AggregateRequest<T extends AggregateResultRecordType> {
 
 export interface BucketedRequestOptions {
   timeRangeFilter: TimeRangeFilter;
-  bucketPeriod?: 'day' | 'month' | 'year';
+  bucketPeriod?: 'day'; // In future 'month' | 'year';
 }

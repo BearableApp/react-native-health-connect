@@ -145,8 +145,8 @@ export default function App() {
       const startTime = moment()
         .subtract(1, 'week')
         .startOf('day')
-        .toISOString(true);
-      const endTime = moment().endOf('day').toISOString(true);
+        .toISOString();
+      const endTime = moment().endOf('day').toISOString();
 
       const result = await readBucketedRecords(recordType, {
         timeRangeFilter: {

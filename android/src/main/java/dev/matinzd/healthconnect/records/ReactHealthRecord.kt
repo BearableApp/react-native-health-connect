@@ -1,15 +1,13 @@
 package dev.matinzd.healthconnect.records
 
 import androidx.health.connect.client.aggregate.AggregationResult
-import androidx.health.connect.client.aggregate.AggregationResultGroupedByPeriod
+import androidx.health.connect.client.aggregate.AggregationResultGroupedByDuration
 import androidx.health.connect.client.records.Record
-import androidx.health.connect.client.request.AggregateGroupByPeriodRequest
+import androidx.health.connect.client.request.AggregateGroupByDurationRequest
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
-import androidx.health.connect.client.response.InsertRecordsResponse
 import androidx.health.connect.client.response.ReadRecordResponse
 import androidx.health.connect.client.response.ReadRecordsResponse
-import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
@@ -65,13 +63,13 @@ class ReactHealthRecord {
       return recordClass.parseAggregationResult(result)
     }
 
-    fun getBucketedRequest(recordType: String, reactRequest: ReadableMap): AggregateGroupByPeriodRequest {
+    fun getBucketedRequest(recordType: String, reactRequest: ReadableMap): AggregateGroupByDurationRequest {
       val recordClass = createReactHealthRecordInstance<Record>(recordType)
 
       return recordClass.getBucketedRequest(reactRequest)
     }
 
-    fun parseBucketedResult(recordType: String, result: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
+    fun parseBucketedResult(recordType: String, result: List<AggregationResultGroupedByDuration>): WritableNativeArray {
       val recordClass = createReactHealthRecordInstance<Record>(recordType)
 
       return recordClass.parseBucketedResult(result)
