@@ -169,11 +169,11 @@ fun convertDeviceToJSMap(device: Device?): WritableNativeMap? {
 }
 
 fun formatDateKey(instant: Instant): String {
-  val zoneTime = ZonedDateTime.ofInstant(instant, ZoneOffset.systemDefault())
-  val dateKey = zoneTime.format(DateTimeFormatter.BASIC_ISO_DATE)
+  val zoneId = ZoneOffset.systemDefault()
+  val zoneTime = ZonedDateTime.ofInstant(instant, zoneId)
 
-  // Remove the offset hours
-  return dateKey.substring(0, 8)
+  val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+  return zoneTime.format(dateFormatter)
 }
 
 val reactRecordTypeToClassMap: Map<String, KClass<out Record>> = mapOf(
