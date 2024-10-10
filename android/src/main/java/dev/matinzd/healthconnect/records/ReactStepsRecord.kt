@@ -1,17 +1,14 @@
 package dev.matinzd.healthconnect.records
 
 import androidx.health.connect.client.aggregate.AggregationResult
-import androidx.health.connect.client.aggregate.AggregationResultGroupedByPeriod
+import androidx.health.connect.client.aggregate.AggregationResultGroupedByDuration
 import androidx.health.connect.client.records.StepsRecord
-import androidx.health.connect.client.request.AggregateGroupByPeriodRequest
+import androidx.health.connect.client.request.AggregateGroupByDurationRequest
 import androidx.health.connect.client.request.AggregateRequest
-import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.utils.*
-import java.time.Period
-import java.time.format.DateTimeFormatter
 
 class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
   override fun getResultType(): String {
@@ -44,11 +41,11 @@ class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
     }
   }
 
-  override fun getBucketedRequest(record: ReadableMap): AggregateGroupByPeriodRequest {
-    // get the bucket period and default to 1 day if not provided
-    val bucketPeriod = if (record.hasKey("bucketPeriod")) record.getPeriod("bucketPeriod") else Period.ofDays(1)
+  override fun getBucketedRequest(record: ReadableMap): AggregateGroupByDurationRequest {
+    // get the bucket period - defaults to 1 day
+    val bucketPeriod = record.getPeriod("bucketPeriod")
 
-    return AggregateGroupByPeriodRequest(
+    return AggregateGroupByDurationRequest(
         metrics = setOf(
           StepsRecord.COUNT_TOTAL
         ),
@@ -58,13 +55,13 @@ class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
       )
   }
 
-  override fun parseBucketedResult(records: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
+  override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>): WritableNativeArray {
     return WritableNativeArray().apply {
       for (daysRecord in records) {
         // The result may be null if no data is available in the time range
         val totalSteps = daysRecord.result[StepsRecord.COUNT_TOTAL]
         // Parse date time in string format YYYYMMDD
-        val dateKey = daysRecord.startTime.format(DateTimeFormatter.BASIC_ISO_DATE)
+        val dateKey = formatDateKey(daysRecord.startTime)
 
         if (totalSteps != null) {
           pushMap(WritableNativeMap().apply {

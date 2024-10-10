@@ -13,10 +13,10 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.records.*
+import java.time.Duration
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.Period
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.reflect.KClass
 
@@ -91,10 +91,10 @@ fun ReadableMap.getTimeRangeFilter(key: String? = null): TimeRangeFilter {
   val operator = timeRangeFilter.getString("operator")
 
   val startTime =
-    if (timeRangeFilter.hasKey("startTime")) LocalDateTime.parse(timeRangeFilter.getString("startTime"), DateTimeFormatter.ISO_DATE_TIME) else null
+    if (timeRangeFilter.hasKey("startTime")) Instant.parse(timeRangeFilter.getString("startTime")) else null
 
   val endTime =
-    if (timeRangeFilter.hasKey("endTime"))  LocalDateTime.parse(timeRangeFilter.getString("endTime"), DateTimeFormatter.ISO_DATE_TIME) else null
+    if (timeRangeFilter.hasKey("endTime"))  Instant.parse(timeRangeFilter.getString("endTime")) else null
 
   when (operator) {
     "between" -> {
@@ -128,14 +128,18 @@ fun ReadableMap.getTimeRangeFilter(key: String? = null): TimeRangeFilter {
   }
 }
 
-fun ReadableMap.getPeriod(key: String): Period {
+fun ReadableMap.getPeriod(key: String): Duration {
+  if (!this.hasKey("bucketPeriod")) {
+    return Duration.ofDays(1)
+  }
   val period = this.getString(key)
-    ?: throw Exception("Period should be provided")
+  if (period.isNullOrEmpty()) {
+    return Duration.ofDays(1)
+  }
 
   return when (period) {
-    "day" -> Period.ofDays(1)
-    "month" -> Period.ofMonths(1)
-    "year" -> Period.ofYears(1)
+    "day" -> Duration.ofDays(1)
+    // In future might want to add 'month' & 'year'
     else -> throw Exception("Invalid period type")
   }
 }
@@ -162,6 +166,14 @@ fun convertDeviceToJSMap(device: Device?): WritableNativeMap? {
     putString("manufacturer", device.manufacturer)
     putString("model", device.model)
   }
+}
+
+fun formatDateKey(instant: Instant): String {
+  val zoneId = ZoneOffset.systemDefault()
+  val zoneTime = ZonedDateTime.ofInstant(instant, zoneId)
+
+  val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+  return zoneTime.format(dateFormatter)
 }
 
 val reactRecordTypeToClassMap: Map<String, KClass<out Record>> = mapOf(
