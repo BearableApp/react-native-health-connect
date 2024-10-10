@@ -49,7 +49,7 @@ export interface AggregateRequest<T extends AggregateResultRecordType> {
 }
 export interface BucketedRequestOptions {
     timeRangeFilter: TimeRangeFilter;
-    bucketPeriod?: 'day' | 'month' | 'year';
+    bucketPeriod?: 'day';
 }
 export {};
 //# sourceMappingURL=aggregate.types.d.ts.map
