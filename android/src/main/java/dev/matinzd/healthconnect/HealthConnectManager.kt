@@ -166,7 +166,7 @@ class HealthConnectManager(private val applicationContext: ReactApplicationConte
         try {
           val request = ReactHealthRecord.getBucketedRequest(recordType, options)
           val response = healthConnectClient.aggregateGroupByDuration(request)
-          promise.resolve(ReactHealthRecord.parseBucketedResult(recordType, response))
+          promise.resolve(ReactHealthRecord.parseBucketedResult(recordType, response, options))
         } catch (e: Exception) {
           promise.rejectWithException(e)
         }

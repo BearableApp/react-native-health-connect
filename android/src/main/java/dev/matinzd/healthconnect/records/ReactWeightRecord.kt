@@ -5,6 +5,7 @@ import androidx.health.connect.client.aggregate.AggregationResultGroupedByDurati
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.request.AggregateGroupByDurationRequest
 import androidx.health.connect.client.request.AggregateRequest
+import androidx.health.connect.client.units.Mass
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
@@ -45,10 +46,43 @@ class ReactWeightRecord : ReactHealthRecordImpl<WeightRecord> {
   }
 
   override fun getBucketedRequest(record: ReadableMap): AggregateGroupByDurationRequest {
-    throw AggregationNotSupported()
+    // get the bucket period - defaults to 1 day
+    val bucketPeriod = record.getPeriod("bucketPeriod")
+
+    return AggregateGroupByDurationRequest(
+      metrics = setOf(
+        WeightRecord.WEIGHT_AVG
+      ),
+      timeRangeFilter = record.getTimeRangeFilter("timeRangeFilter"),
+      dataOriginFilter = convertJsToDataOriginSet(record.getArray("dataOriginFilter")),
+      timeRangeSlicer = bucketPeriod
+    )
   }
 
-  override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>): WritableNativeArray {
-    throw AggregationNotSupported()
+  override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>, options: ReadableMap): WritableNativeArray {
+    val units = options.getUnits()
+
+    return WritableNativeArray().apply {
+      for (daysRecord in records) {
+        // The result may be null if no data is available in the time range
+        val avgWeight = daysRecord.result[WeightRecord.WEIGHT_AVG]
+
+        if (avgWeight != null) {
+          val value = convertMassToValue(avgWeight, units)
+          val record = formatRecord(daysRecord.startTime, getResultType(), value)
+          pushMap(record)
+        }
+      }
+    }
+  }
+
+  private fun convertMassToValue(mass: Mass, unit: String?): String {
+    var value: Double = when (unit) {
+      "kg" -> mass.inKilograms
+      "pound" -> mass.inPounds
+      else -> mass.inKilograms
+    }
+
+    return formatDoubleAsString(value)
   }
 }

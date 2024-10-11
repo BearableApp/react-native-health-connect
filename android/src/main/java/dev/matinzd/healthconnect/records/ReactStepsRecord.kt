@@ -55,7 +55,7 @@ class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
       )
   }
 
-  override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>): WritableNativeArray {
+  override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>, options: ReadableMap): WritableNativeArray {
     return WritableNativeArray().apply {
       for (daysRecord in records) {
         // The result may be null if no data is available in the time range

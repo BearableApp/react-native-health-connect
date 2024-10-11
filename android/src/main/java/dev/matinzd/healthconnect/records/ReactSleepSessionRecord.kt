@@ -58,7 +58,7 @@ class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
     throw AggregationNotSupported()
   }
 
-  override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>): WritableNativeArray {
+  override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>, options: ReadableMap): WritableNativeArray {
     throw AggregationNotSupported()
   }
 }

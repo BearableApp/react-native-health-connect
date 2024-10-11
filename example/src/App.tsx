@@ -18,6 +18,7 @@ import {
   AggregateResultRecordType,
   readBucketedRecords,
 } from 'react-native-health-connect';
+import { HealthUnit } from 'src/types/base.types';
 
 const getLastWeekDate = (): Date => {
   return new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -75,10 +76,12 @@ const availableAggregateRecordTypes: AggregateResultRecordType[] = [
   'SleepSession',
 ];
 
-const availableBucketedTypes: RecordType[] = [
-  'Steps',
-  'HeartRate',
-  'RestingHeartRate',
+const availableBucketedTypes: { type: RecordType; units?: HealthUnit }[] = [
+  { type: 'Steps' },
+  { type: 'HeartRate' },
+  { type: 'RestingHeartRate' },
+  { type: 'Weight', units: 'kg' },
+  { type: 'Weight', units: 'pound' },
 ];
 
 export default function App() {
@@ -145,7 +148,10 @@ export default function App() {
     });
   };
 
-  const getBucketedRecords = async (recordType: RecordType) => {
+  const getBucketedRecords = async (
+    recordType: RecordType,
+    unit?: HealthUnit
+  ) => {
     try {
       // Want to keep offset on the iso string to account for timezones
       const startTime = moment()
@@ -160,6 +166,7 @@ export default function App() {
           startTime,
           endTime,
         },
+        unit,
       });
 
       console.log('result', result);
@@ -195,11 +202,11 @@ export default function App() {
 
       <Text>Reading bucketed data</Text>
 
-      {availableBucketedTypes.map((recordType) => (
+      {availableBucketedTypes.map(({ type, units }) => (
         <Button
-          key={recordType}
-          title={`Read bucketed ${recordType}`}
-          onPress={() => getBucketedRecords(recordType)}
+          key={`${type}-${units}`}
+          title={`Read bucketed ${type}${units ? `(${units})` : ''}`}
+          onPress={() => getBucketedRecords(type, units)}
         />
       ))}
 

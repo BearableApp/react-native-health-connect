@@ -77,3 +77,5 @@ export interface SleepStage {
   // Use SleepStageType constant
   stage: number;
 }
+
+export type HealthUnit = 'celsius' | 'fahrenheit' | 'mmhg' | 'kg' | 'pound';

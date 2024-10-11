@@ -145,6 +145,14 @@ fun ReadableMap.getPeriod(key: String): Duration {
   }
 }
 
+fun ReadableMap.getUnits(key: String? = null): String? {
+  val optionKey = key ?: "unit"
+  if (!this.hasKey(optionKey)) {
+    return null
+  }
+  return this.getString(optionKey)
+}
+
 fun convertMetadataToJSMap(meta: Metadata): WritableNativeMap {
   return WritableNativeMap().apply {
     putString("id", meta.id)
@@ -178,6 +186,11 @@ fun formatDateKey(instant: Instant): String {
 }
 
 fun formatLongAsString(value: Long): String {
+  val formatter = DecimalFormat("#.##")
+  return formatter.format(value)
+}
+
+fun formatDoubleAsString(value: Double): String {
   val formatter = DecimalFormat("#.##")
   return formatter.format(value)
 }
