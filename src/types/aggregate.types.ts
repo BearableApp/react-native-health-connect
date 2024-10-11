@@ -1,4 +1,9 @@
-import type { MassResult, PressureResult, TimeRangeFilter } from './base.types';
+import type {
+  HealthUnit,
+  MassResult,
+  PressureResult,
+  TimeRangeFilter,
+} from './base.types';
 
 interface BaseAggregate {
   dataOrigins: string[];
@@ -69,4 +74,5 @@ export interface AggregateRequest<T extends AggregateResultRecordType> {
 export interface BucketedRequestOptions {
   timeRangeFilter: TimeRangeFilter;
   bucketPeriod?: 'day'; // In future 'month' | 'year';
+  unit?: HealthUnit;
 }

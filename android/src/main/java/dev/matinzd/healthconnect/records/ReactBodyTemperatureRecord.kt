@@ -5,12 +5,14 @@ import androidx.health.connect.client.aggregate.AggregationResultGroupedByDurati
 import androidx.health.connect.client.records.BodyTemperatureRecord
 import androidx.health.connect.client.request.AggregateGroupByDurationRequest
 import androidx.health.connect.client.request.AggregateRequest
+import androidx.health.connect.client.units.Mass
 import androidx.health.connect.client.units.Temperature
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.utils.AggregationNotSupported
 import dev.matinzd.healthconnect.utils.convertMetadataToJSMap
+import dev.matinzd.healthconnect.utils.formatDoubleAsString
 
 class ReactBodyTemperatureRecord : ReactHealthRecordImpl<BodyTemperatureRecord> {
   override fun getResultType(): String {
@@ -38,7 +40,7 @@ class ReactBodyTemperatureRecord : ReactHealthRecordImpl<BodyTemperatureRecord> 
     throw AggregationNotSupported()
   }
 
-  override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>): WritableNativeArray {
+  override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>, options: ReadableMap): WritableNativeArray {
     throw AggregationNotSupported()
   }
 

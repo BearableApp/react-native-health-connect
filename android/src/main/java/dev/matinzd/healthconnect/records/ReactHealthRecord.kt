@@ -69,10 +69,10 @@ class ReactHealthRecord {
       return recordClass.getBucketedRequest(reactRequest)
     }
 
-    fun parseBucketedResult(recordType: String, result: List<AggregationResultGroupedByDuration>): WritableNativeArray {
+    fun parseBucketedResult(recordType: String, result: List<AggregationResultGroupedByDuration>, reactRequest: ReadableMap): WritableNativeArray {
       val recordClass = createReactHealthRecordInstance<Record>(recordType)
 
-      return recordClass.parseBucketedResult(result)
+      return recordClass.parseBucketedResult(result, reactRequest)
     }
 
     fun parseRecords(
