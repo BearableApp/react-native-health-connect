@@ -1,7 +1,7 @@
 import * as React from 'react';
 import moment from 'moment';
 
-import { Button, ScrollView, StyleSheet, Text } from 'react-native';
+import { Alert, Button, ScrollView, StyleSheet, Text } from 'react-native';
 import {
   aggregateRecord,
   getGrantedPermissions,
@@ -73,6 +73,12 @@ const availableAggregateRecordTypes: AggregateResultRecordType[] = [
   'Steps',
   'Weight',
   'SleepSession',
+];
+
+const availableBucketedTypes: RecordType[] = [
+  'Steps',
+  'HeartRate',
+  'RestingHeartRate',
 ];
 
 export default function App() {
@@ -157,6 +163,10 @@ export default function App() {
       });
 
       console.log('result', result);
+      Alert.alert(
+        'Bucketed records',
+        result.map((r) => `${r.dateKey} - ${r.entry.value}`).join('\n')
+      );
     } catch (error) {
       console.log('error', error);
     }
@@ -185,16 +195,13 @@ export default function App() {
 
       <Text>Reading bucketed data</Text>
 
-      <Button
-        title="Read bucketed steps"
-        onPress={() => getBucketedRecords('Steps')}
-      />
-
-      {/* Not supported */}
-      <Button
-        title="Read bucketed heart rate"
-        onPress={() => getBucketedRecords('HeartRate')}
-      />
+      {availableBucketedTypes.map((recordType) => (
+        <Button
+          key={recordType}
+          title={`Read bucketed ${recordType}`}
+          onPress={() => getBucketedRecords(recordType)}
+        />
+      ))}
 
       <Text>Reading data</Text>
 
