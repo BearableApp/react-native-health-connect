@@ -56,10 +56,35 @@ class ReactHeartRateRecord : ReactHealthRecordImpl<HeartRateRecord> {
   }
 
   override fun getBucketedRequest(record: ReadableMap): AggregateGroupByDurationRequest {
-    throw AggregationNotSupported()
+    // get the bucket period - defaults to 1 day
+    val bucketPeriod = record.getPeriod("bucketPeriod")
+
+    return AggregateGroupByDurationRequest(
+      metrics = setOf(
+        HeartRateRecord.BPM_AVG,
+        HeartRateRecord.BPM_MAX,
+        HeartRateRecord.BPM_MIN,
+      ),
+      timeRangeFilter = record.getTimeRangeFilter("timeRangeFilter"),
+      dataOriginFilter = convertJsToDataOriginSet(record.getArray("dataOriginFilter")),
+      timeRangeSlicer = bucketPeriod
+    )
   }
 
   override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>): WritableNativeArray {
-    throw AggregationNotSupported()
+    return WritableNativeArray().apply {
+      for (daysRecord in records) {
+        // The result may be null if no data is available in the time range
+        val hrMin = daysRecord.result[HeartRateRecord.BPM_MIN]
+        val hrAvg = daysRecord.result[HeartRateRecord.BPM_AVG]
+        val hrMax = daysRecord.result[HeartRateRecord.BPM_MAX]
+
+        if (hrMin != null && hrAvg != null && hrMax != null) {
+          val value = "${formatLongAsString(hrMin)}/${formatLongAsString(hrAvg)}/${formatLongAsString(hrMax)}"
+          val record = formatRecord(daysRecord.startTime, getResultType(), value)
+          pushMap(record)
+        }
+      }
+    }
   }
 }

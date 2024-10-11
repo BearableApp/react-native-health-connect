@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.records.*
+import java.text.DecimalFormat
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneOffset
@@ -174,6 +175,22 @@ fun formatDateKey(instant: Instant): String {
 
   val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
   return zoneTime.format(dateFormatter)
+}
+
+fun formatLongAsString(value: Long): String {
+  val formatter = DecimalFormat("#.##")
+  return formatter.format(value)
+}
+
+fun formatRecord(date: Instant, type: String, value: String): WritableNativeMap {
+  return WritableNativeMap().apply {
+    putString("dateKey", formatDateKey(date))
+    putMap("entry", WritableNativeMap().apply {
+      putString("type", type)
+      putString("value", value)
+      putString("family", "HEALTH")
+    })
+  }
 }
 
 val reactRecordTypeToClassMap: Map<String, KClass<out Record>> = mapOf(

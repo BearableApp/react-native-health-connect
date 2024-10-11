@@ -60,18 +60,11 @@ class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
       for (daysRecord in records) {
         // The result may be null if no data is available in the time range
         val totalSteps = daysRecord.result[StepsRecord.COUNT_TOTAL]
-        // Parse date time in string format YYYYMMDD
-        val dateKey = formatDateKey(daysRecord.startTime)
 
         if (totalSteps != null) {
-          pushMap(WritableNativeMap().apply {
-            putString("dateKey", dateKey)
-            putMap("entry", WritableNativeMap().apply {
-              putString("type", getResultType())
-              putString("value", totalSteps.toString())
-              putString("family", "HEALTH")
-            })
-          })
+          val value = formatLongAsString(totalSteps)
+          val record = formatRecord(daysRecord.startTime, getResultType(), value)
+          pushMap(record)
         }
       }
     }
