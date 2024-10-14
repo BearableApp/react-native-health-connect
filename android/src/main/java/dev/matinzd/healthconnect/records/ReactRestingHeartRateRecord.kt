@@ -65,7 +65,7 @@ class ReactRestingHeartRateRecord : ReactHealthRecordImpl<RestingHeartRateRecord
         val restingHRAvg = daysRecord.result[RestingHeartRateRecord.BPM_AVG]
 
         if (restingHRAvg != null) {
-          val value = formatLongAsString(restingHRAvg)
+          val value = formatNumberAsString(restingHRAvg)
           val record = formatRecord(daysRecord.startTime, getResultType(), value)
           pushMap(record)
         }

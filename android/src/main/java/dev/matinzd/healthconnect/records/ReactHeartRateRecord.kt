@@ -80,7 +80,7 @@ class ReactHeartRateRecord : ReactHealthRecordImpl<HeartRateRecord> {
         val hrMax = daysRecord.result[HeartRateRecord.BPM_MAX]
 
         if (hrMin != null && hrAvg != null && hrMax != null) {
-          val value = "${formatLongAsString(hrMin)}/${formatLongAsString(hrAvg)}/${formatLongAsString(hrMax)}"
+          val value = "${formatNumberAsString(hrMin)}/${formatNumberAsString(hrAvg)}/${formatNumberAsString(hrMax)}"
           val record = formatRecord(daysRecord.startTime, getResultType(), value)
           pushMap(record)
         }

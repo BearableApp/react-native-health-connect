@@ -62,7 +62,7 @@ class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
         val totalSteps = daysRecord.result[StepsRecord.COUNT_TOTAL]
 
         if (totalSteps != null) {
-          val value = formatLongAsString(totalSteps)
+          val value = formatNumberAsString(totalSteps)
           val record = formatRecord(daysRecord.startTime, getResultType(), value)
           pushMap(record)
         }

@@ -215,12 +215,12 @@ fun formatSleepDateKey(instant: Instant, cutOff: Int): String {
   return formatDateKey(finalInstant)
 }
 
-fun formatLongAsString(value: Long): String {
+fun formatNumberAsString(value: Long): String {
   val formatter = DecimalFormat("#.##")
   return formatter.format(value)
 }
 
-fun formatDoubleAsString(value: Double): String {
+fun formatNumberAsString(value: Double): String {
   val formatter = DecimalFormat("#.##")
   return formatter.format(value)
 }
@@ -236,6 +236,17 @@ fun formatDuration(seconds: Double): String {
 fun formatRecord(date: Instant, type: String, value: String): WritableNativeMap {
   return WritableNativeMap().apply {
     putString("dateKey", formatDateKey(date))
+    putMap("entry", WritableNativeMap().apply {
+      putString("type", type)
+      putString("value", value)
+      putString("family", "HEALTH")
+    })
+  }
+}
+
+fun formatRecord(date: String, type: String, value: String): WritableNativeMap {
+  return WritableNativeMap().apply {
+    putString("dateKey", date)
     putMap("entry", WritableNativeMap().apply {
       putString("type", type)
       putString("value", value)
