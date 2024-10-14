@@ -3,6 +3,7 @@ package dev.matinzd.healthconnect.records
 import androidx.health.connect.client.aggregate.AggregationResult
 import androidx.health.connect.client.aggregate.AggregationResultGroupedByDuration
 import androidx.health.connect.client.records.BloodPressureRecord
+import androidx.health.connect.client.records.HeartRateVariabilityRmssdRecord
 import androidx.health.connect.client.request.AggregateGroupByDurationRequest
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.units.Pressure
@@ -78,7 +79,32 @@ class ReactBloodPressureRecord : ReactHealthRecordImpl<BloodPressureRecord> {
   }
 
   override fun parseManuallyBucketedResult(records: List<BloodPressureRecord>, options: ReadableMap): WritableNativeArray {
-    throw AggregationNotSupported()
+    var recordsByDate: MutableMap<String, MutableList<BloodPressureRecord>> = mutableMapOf()
+
+    // Group by date
+    for (record in records) {
+      val dateKey = formatDateKey(record.time)
+      val recordsForDate = recordsByDate.getOrPut(dateKey) { mutableListOf() }
+      recordsForDate.add(record)
+    }
+
+    return WritableNativeArray().apply {
+      // Create aggregate value
+      for (recordsForDate in recordsByDate.entries) {
+        val dateKey = recordsForDate.key
+        val pressureRecords = recordsForDate.value
+        val totalSystolic = pressureRecords.fold(0.0) { acc: Double, record: BloodPressureRecord -> acc + record.systolic.inMillimetersOfMercury }
+        val totalDiastolic = pressureRecords.fold(0.0) { acc: Double, record: BloodPressureRecord -> acc + record.diastolic.inMillimetersOfMercury }
+
+        val valueSystolic = formatNumberAsString(totalSystolic / pressureRecords.size)
+        val valueDiastolic = formatNumberAsString(totalDiastolic / pressureRecords.size)
+
+        val value = "$valueSystolic/$valueDiastolic"
+
+        val record = formatRecord(dateKey, getResultType(), value)
+        pushMap(record)
+      }
+    }
   }
 
   private fun bloodPressureToJsMap(pressure: Pressure): WritableNativeMap {

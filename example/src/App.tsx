@@ -86,6 +86,7 @@ const availableBucketedTypes: { type: RecordType; units?: HealthUnit }[] = [
   { type: 'BodyTemperature', units: 'celsius' },
   { type: 'BodyTemperature', units: 'fahrenheit' },
   { type: 'HeartRateVariabilityRmssd' },
+  { type: 'BloodPressure' },
 ];
 
 export default function App() {
