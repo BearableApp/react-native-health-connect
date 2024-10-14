@@ -77,6 +77,10 @@ class ReactBloodPressureRecord : ReactHealthRecordImpl<BloodPressureRecord> {
     throw AggregationNotSupported()
   }
 
+  override fun parseManuallyBucketedResult(records: List<BloodPressureRecord>, options: ReadableMap): WritableNativeArray {
+    throw AggregationNotSupported()
+  }
+
   private fun bloodPressureToJsMap(pressure: Pressure): WritableNativeMap {
     return WritableNativeMap().apply {
       putDouble("inMillimetersOfMercury", pressure.inMillimetersOfMercury)

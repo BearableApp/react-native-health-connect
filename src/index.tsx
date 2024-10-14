@@ -130,6 +130,19 @@ export function readBucketedRecords(
   recordType: RecordType,
   options: BucketedRequestOptions
 ): Promise<BucketedRecordsResult> {
+  // These types aren't currently supported by the aggregateByDuration sdk method
+  // TODO: Handle blood pressure aggregate only available on Android 15+
+  if (
+    [
+      'BloodPressure',
+      'BodyTemperature',
+      'HeartRateVariabilityRmssd',
+      'SleepSession',
+    ].includes(recordType)
+  ) {
+    return HealthConnect.readManuallyBucketedRecords(recordType, options);
+  }
+
   return HealthConnect.readBucketedRecords(recordType, options);
 }
 

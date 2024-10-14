@@ -36,5 +36,8 @@ abstract class HealthConnectSpec internal constructor(context: ReactApplicationC
   abstract fun readBucketedRecords(recordType: String, options: ReadableMap, promise: Promise);
 
   @ReactMethod
+  abstract fun readManuallyBucketedRecords(recordType: String, options: ReadableMap, promise: Promise);
+
+  @ReactMethod
   abstract fun getChanges(options: ReadableMap, promise: Promise);
 }

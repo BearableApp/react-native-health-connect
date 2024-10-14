@@ -40,4 +40,8 @@ class ReactHeartRateVariabilityRmssdRecord :
   override fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>, options: ReadableMap): WritableNativeArray {
     throw AggregationNotSupported()
   }
+
+  override fun parseManuallyBucketedResult(records: List<HeartRateVariabilityRmssdRecord>, options: ReadableMap): WritableNativeArray {
+    throw AggregationNotSupported()
+  }
 }

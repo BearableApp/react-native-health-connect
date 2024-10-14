@@ -3,7 +3,6 @@ package dev.matinzd.healthconnect.records
 import androidx.health.connect.client.aggregate.AggregationResult
 import androidx.health.connect.client.aggregate.AggregationResultGroupedByDuration
 import androidx.health.connect.client.records.RestingHeartRateRecord
-import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.request.AggregateGroupByDurationRequest
 import androidx.health.connect.client.request.AggregateRequest
 import com.facebook.react.bridge.ReadableMap
@@ -72,5 +71,9 @@ class ReactRestingHeartRateRecord : ReactHealthRecordImpl<RestingHeartRateRecord
         }
       }
     }
+  }
+
+  override fun parseManuallyBucketedResult(records: List<RestingHeartRateRecord>, options: ReadableMap): WritableNativeArray {
+    throw AggregationNotSupported()
   }
 }

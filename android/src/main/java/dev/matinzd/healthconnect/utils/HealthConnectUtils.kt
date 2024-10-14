@@ -16,6 +16,7 @@ import dev.matinzd.healthconnect.records.*
 import java.text.DecimalFormat
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -153,6 +154,16 @@ fun ReadableMap.getUnits(key: String? = null): String? {
   return this.getString(optionKey)
 }
 
+fun ReadableMap.getHourFromTimeRange(key: String? = null): Int {
+  val optionKey = key ?: "startTime"
+  val timeRangeFilter = this.getMap("timeRangeFilter") ?: throw Exception("Time range filter should be provided")
+  val startTime =
+    if (timeRangeFilter.hasKey(optionKey)) timeRangeFilter.getString(optionKey) else throw Exception("Time range filter should have $optionKey provided")
+
+  val date = LocalDateTime.parse(startTime, DateTimeFormatter.ISO_DATE_TIME)
+  return date.hour
+}
+
 fun convertMetadataToJSMap(meta: Metadata): WritableNativeMap {
   return WritableNativeMap().apply {
     putString("id", meta.id)
@@ -185,6 +196,25 @@ fun formatDateKey(instant: Instant): String {
   return zoneTime.format(dateFormatter)
 }
 
+// Format to YYYY-MM-DD HH:mm:ss.SSS as local time
+fun formatLocalString(instant: Instant): String {
+  val zoneId = ZoneOffset.systemDefault()
+  val zoneTime = ZonedDateTime.ofInstant(instant, zoneId)
+
+  val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+  return zoneTime.format(dateFormatter)
+}
+
+fun formatSleepDateKey(instant: Instant, cutOff: Int): String {
+  var finalInstant = instant
+  val date = LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault())
+  if (date.hour > cutOff) {
+    finalInstant = finalInstant.plus(Duration.ofDays(1))
+  }
+
+  return formatDateKey(finalInstant)
+}
+
 fun formatLongAsString(value: Long): String {
   val formatter = DecimalFormat("#.##")
   return formatter.format(value)
@@ -195,6 +225,14 @@ fun formatDoubleAsString(value: Double): String {
   return formatter.format(value)
 }
 
+fun formatDuration(seconds: Double): String {
+  val hours = seconds.toInt() / 3600
+  val secondsAfterHours = seconds.toInt() % 3600
+  val minutes = secondsAfterHours / 60
+
+  return String.format("%d:%02d", hours, minutes)
+}
+
 fun formatRecord(date: Instant, type: String, value: String): WritableNativeMap {
   return WritableNativeMap().apply {
     putString("dateKey", formatDateKey(date))
@@ -203,6 +241,44 @@ fun formatRecord(date: Instant, type: String, value: String): WritableNativeMap 
       putString("value", value)
       putString("family", "HEALTH")
     })
+  }
+}
+
+fun formatSleepRecord(date: String, type: String, sleepValue: SleepValue): WritableNativeMap {
+  val value = formatDuration(sleepValue.duration)
+  var entry = WritableNativeMap().apply {
+    putString("type", type)
+    putString("value", value)
+    putString("family", "HEALTH")
+  }
+
+  var timesInBed = WritableNativeMap()
+  var sleepTimes = WritableNativeMap()
+
+  sleepValue.inBed?.let { inBedAt ->
+    timesInBed.putString("inBedAt", formatLocalString(inBedAt))
+  }
+  sleepValue.outOfBed?.let { outOfBedAt ->
+    timesInBed.putString("outOfBedAt", formatLocalString(outOfBedAt))
+  }
+
+  sleepValue.fellAsleep?.let { fellAsleepAt ->
+    sleepTimes.putString("fellAsleepAt", formatLocalString(fellAsleepAt))
+  }
+  sleepValue.wokeUp?.let { wokeUpAt ->
+    sleepTimes.putString("wokeUpAt", formatLocalString(wokeUpAt))
+  }
+
+  if (timesInBed.hasKey("inBedAt") || timesInBed.hasKey("outOfBedAt")) {
+    entry.putMap("timesInBed", timesInBed)
+  }
+  if (sleepTimes.hasKey("fellAsleepAt") || sleepTimes.hasKey("wokeUpAt")) {
+    entry.putMap("sleepTimes", sleepTimes)
+  }
+
+  return WritableNativeMap().apply {
+    putString("dateKey", date)
+    putMap("entry", entry)
   }
 }
 

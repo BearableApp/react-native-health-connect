@@ -82,6 +82,7 @@ const availableBucketedTypes: { type: RecordType; units?: HealthUnit }[] = [
   { type: 'RestingHeartRate' },
   { type: 'Weight', units: 'kg' },
   { type: 'Weight', units: 'pound' },
+  { type: 'SleepSession' },
 ];
 
 export default function App() {
@@ -153,18 +154,20 @@ export default function App() {
     unit?: HealthUnit
   ) => {
     try {
-      // Want to keep offset on the iso string to account for timezones
-      const startTime = moment()
-        .subtract(1, 'week')
-        .startOf('day')
-        .toISOString();
-      const endTime = moment().endOf('day').toISOString();
+      const startTime = moment().subtract(1, 'week').startOf('day');
+      const endTime = moment().endOf('day');
 
       const result = await readBucketedRecords(recordType, {
         timeRangeFilter: {
           operator: 'between',
-          startTime,
-          endTime,
+          startTime:
+            recordType === 'SleepSession'
+              ? startTime.subtract(12, 'h').toISOString()
+              : startTime.toISOString(),
+          endTime:
+            recordType === 'SleepSession'
+              ? endTime.subtract(12, 'h').toISOString()
+              : endTime.toISOString(),
         },
         unit,
       });
