@@ -178,8 +178,7 @@ class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
                 } else {
                   entry.endDate
                 }
-
-                sleepValue.duration += Duration.between(sleepValue.fellAsleep, sleepValue.wokeUp).seconds
+                sleepValue.duration += Duration.between(entry.startDate, entry.endDate).seconds
               }
               else -> {}
             }
