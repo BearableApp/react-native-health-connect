@@ -54,6 +54,5 @@ export interface SleepStage {
     endTime: string;
     stage: number;
 }
-export type HealthUnit = 'celsius' | 'fahrenheit' | 'mmhg' | 'kg' | 'pound';
 export {};
 //# sourceMappingURL=base.types.d.ts.map
