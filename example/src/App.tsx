@@ -17,8 +17,8 @@ import {
   RecordType,
   AggregateResultRecordType,
   readBucketedRecords,
+  HealthUnit,
 } from 'react-native-health-connect';
-import type { HealthUnit } from 'src/types/base.types';
 
 const getLastWeekDate = (): Date => {
   return new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);

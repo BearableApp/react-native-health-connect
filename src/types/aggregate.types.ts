@@ -1,9 +1,6 @@
-import type {
-  HealthUnit,
-  MassResult,
-  PressureResult,
-  TimeRangeFilter,
-} from './base.types';
+import type { MassResult, PressureResult, TimeRangeFilter } from './base.types';
+
+export type HealthUnit = 'celsius' | 'fahrenheit' | 'kg' | 'pound';
 
 interface BaseAggregate {
   dataOrigins: string[];
