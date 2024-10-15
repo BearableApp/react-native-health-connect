@@ -173,5 +173,19 @@ class HealthConnectManager(private val applicationContext: ReactApplicationConte
       }
     }
   }
+
+  fun readManuallyBucketedRecords(recordType: String, options: ReadableMap, promise: Promise) {
+    throwUnlessClientIsAvailable(promise) {
+      coroutineScope.launch {
+        try {
+          val request = ReactHealthRecord.parseReadRequest(recordType, options)
+          val response = healthConnectClient.readRecords(request)
+          promise.resolve(ReactHealthRecord.parseManuallyBucketedResult(recordType, response.records, options))
+        } catch (e: Exception) {
+          promise.rejectWithException(e)
+        }
+      }
+    }
+  }
 }
 

@@ -69,4 +69,8 @@ class ReactStepsRecord : ReactHealthRecordImpl<StepsRecord> {
       }
     }
   }
+
+  override fun parseManuallyBucketedResult(records: List<StepsRecord>, options: ReadableMap): WritableNativeArray {
+    throw AggregationNotSupported()
+  }
 }

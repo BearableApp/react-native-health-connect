@@ -16,4 +16,5 @@ interface ReactHealthRecordImpl<T : Record> {
   fun parseAggregationResult(record: AggregationResult): WritableNativeMap
   fun getBucketedRequest(options: ReadableMap): AggregateGroupByDurationRequest
   fun parseBucketedResult(records: List<AggregationResultGroupedByDuration>, options: ReadableMap): WritableNativeArray
+  fun parseManuallyBucketedResult(records: List<T>, options: ReadableMap): WritableNativeArray
 }

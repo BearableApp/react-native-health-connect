@@ -75,6 +75,12 @@ class ReactHealthRecord {
       return recordClass.parseBucketedResult(result, reactRequest)
     }
 
+    fun parseManuallyBucketedResult(recordType: String, result: List<Record>, reactRequest: ReadableMap): WritableNativeArray {
+      val recordClass = createReactHealthRecordInstance<Record>(recordType)
+
+      return recordClass.parseManuallyBucketedResult(result, reactRequest)
+    }
+
     fun parseRecords(
       recordType: String,
       response: ReadRecordsResponse<out Record>

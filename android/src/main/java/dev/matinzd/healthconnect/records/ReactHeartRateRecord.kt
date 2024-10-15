@@ -87,4 +87,8 @@ class ReactHeartRateRecord : ReactHealthRecordImpl<HeartRateRecord> {
       }
     }
   }
+
+  override fun parseManuallyBucketedResult(records: List<HeartRateRecord>, options: ReadableMap): WritableNativeArray {
+    throw AggregationNotSupported()
+  }
 }

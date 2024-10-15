@@ -76,6 +76,10 @@ class ReactWeightRecord : ReactHealthRecordImpl<WeightRecord> {
     }
   }
 
+  override fun parseManuallyBucketedResult(records: List<WeightRecord>, options: ReadableMap): WritableNativeArray {
+    throw AggregationNotSupported()
+  }
+
   private fun convertMassToValue(mass: Mass, unit: String?): String {
     var value: Double = when (unit) {
       "kg" -> mass.inKilograms
