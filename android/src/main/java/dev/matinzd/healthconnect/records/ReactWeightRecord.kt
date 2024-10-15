@@ -87,6 +87,6 @@ class ReactWeightRecord : ReactHealthRecordImpl<WeightRecord> {
       else -> mass.inKilograms
     }
 
-    return formatDoubleAsString(value)
+    return formatNumberAsString(value)
   }
 }

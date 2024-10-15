@@ -83,6 +83,10 @@ const availableBucketedTypes: { type: RecordType; units?: HealthUnit }[] = [
   { type: 'Weight', units: 'kg' },
   { type: 'Weight', units: 'pound' },
   { type: 'SleepSession' },
+  { type: 'BodyTemperature', units: 'celsius' },
+  { type: 'BodyTemperature', units: 'fahrenheit' },
+  { type: 'HeartRateVariabilityRmssd' },
+  { type: 'BloodPressure' },
 ];
 
 export default function App() {

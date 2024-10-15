@@ -10,6 +10,9 @@ import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.utils.AggregationNotSupported
 import dev.matinzd.healthconnect.utils.convertMetadataToJSMap
+import dev.matinzd.healthconnect.utils.formatDateKey
+import dev.matinzd.healthconnect.utils.formatNumberAsString
+import dev.matinzd.healthconnect.utils.formatRecord
 
 class ReactHeartRateVariabilityRmssdRecord :
   ReactHealthRecordImpl<HeartRateVariabilityRmssdRecord> {
@@ -42,6 +45,26 @@ class ReactHeartRateVariabilityRmssdRecord :
   }
 
   override fun parseManuallyBucketedResult(records: List<HeartRateVariabilityRmssdRecord>, options: ReadableMap): WritableNativeArray {
-    throw AggregationNotSupported()
+    var recordsByDate: MutableMap<String, MutableList<HeartRateVariabilityRmssdRecord>> = mutableMapOf()
+
+    // Group by date
+    for (record in records) {
+      val dateKey = formatDateKey(record.time)
+      val recordsForDate = recordsByDate.getOrPut(dateKey) { mutableListOf() }
+      recordsForDate.add(record)
+    }
+
+    return WritableNativeArray().apply {
+      // Create aggregate value
+      for (recordsForDate in recordsByDate.entries) {
+        val dateKey = recordsForDate.key
+        val variabilityRecords = recordsForDate.value
+        val totalVariability = variabilityRecords.fold(0.0) { acc: Double, record: HeartRateVariabilityRmssdRecord -> acc + record.heartRateVariabilityMillis }
+        val value = formatNumberAsString(totalVariability / variabilityRecords.size)
+
+        val record = formatRecord(dateKey, getResultType(), value)
+        pushMap(record)
+      }
+    }
   }
 }
