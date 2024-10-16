@@ -31,7 +31,7 @@ Make sure you have React Native version 0.71 or higher installed to use v2 of Re
 To install react-native-health-connect, use the following command:
 
 ```bash
-npm install react-native-health-connect
+npm install https://github.com/BearableApp/react-native-health-connect
 ```
 
 If you are using React Native CLI template, for version 2 onwards, please add the following code into your `MainActivity.kt` within the `onCreate` method:
@@ -189,7 +189,22 @@ For iOS there are two alteranatives you can use which is very similar to Health 
 
 ## Documentation
 
-More examples and full documentation can be found [here](https://matinzd.github.io/react-native-health-connect/)
+More examples and full documentation can be found [here](https://matinzd.github.io/react-native-health-connect/).
+
+Or to run locally do:
+
+```
+cd docs
+yarn install
+yarn start
+```
+
+- [Intro](docs/docs/intro.md)
+- [Getting Started](docs/docs/get-started.md)
+- [Permissions](docs/docs/permissions.md)
+- [API](docs/docs/api)
+  - [`readRecords`](docs/docs/api/methods/05-readRecords.md)
+  - [`readBucketedRecords`](docs/docs/api/methods/)
 
 ## Features
 
