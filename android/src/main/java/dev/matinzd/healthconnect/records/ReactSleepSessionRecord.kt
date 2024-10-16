@@ -170,7 +170,7 @@ class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
                 } else {
                   entry.startDate
                 }
-                sleepValue.wokeUp = if (sleepValue.wokeUp != null && sleepValue.wokeUp!!.isBefore(entry.endDate)) {
+                sleepValue.wokeUp = if (sleepValue.wokeUp != null && sleepValue.wokeUp!!.isAfter(entry.endDate)) {
                   sleepValue.wokeUp
                 } else {
                   entry.endDate
