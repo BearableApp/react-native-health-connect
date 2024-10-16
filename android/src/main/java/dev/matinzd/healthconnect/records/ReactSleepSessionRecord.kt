@@ -87,21 +87,23 @@ class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
     val cutOffHour = options.getHourFromTimeRange()
 
     for (daysRecord in records) {
-      // If no stages then this is a manual sleep entry so we create new list with one stage
-      // Have to map like this as we can't create a sleep stage as they're only available API 34+
-      val stages: List<SimpleSleepSample> = daysRecord.stages.map {
-        stage: SleepSessionRecord.Stage -> SimpleSleepSample(
-          stage.startTime,
-          stage.endTime,
-          convertRecordToSleepType(stage.stage)
-        )
-      }.ifEmpty {
-        listOf(SimpleSleepSample(
-          daysRecord.startTime,
-          daysRecord.endTime,
-          SleepType.ASLEEP
+      var stages: List<SimpleSleepSample> = mutableListOf()
+      for (stage in daysRecord.stages) {
+        stages = stages.plus(SimpleSleepSample(
+          startDate = stage.startTime,
+          endDate = stage.endTime,
+          type = convertRecordToSleepType(stage.stage)
         ))
       }
+
+      // Can't use sleep stage class as they're only available API 34+ so looping and converting types first
+      // The in bed time is consider the whole record (any overlap will be handled below)
+      // If no stages then a manual entry has been made and this is considered in bed
+      stages = stages.plus(SimpleSleepSample(
+        startDate = daysRecord.startTime,
+        endDate = daysRecord.endTime,
+        type = SleepType.IN_BED
+      ))
 
       for (stage in stages) {
         val dateKey = formatSleepDateKey(stage.startDate, cutOffHour)
@@ -112,26 +114,21 @@ class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
 
         val sleepTypeDict = sampleDict.getOrPut(dateKey) { mutableMapOf() }
         val samplesForType = sleepTypeDict.getOrPut(sleepType) { mutableListOf() }
-
-        var newSample = SimpleSleepSample(
-          stage.startDate,
-          stage.endDate,
-          sleepType
-        )
+        var newSample = stage
 
         // Check if there's an overlap with the last sample in the list
         if (samplesForType.isNotEmpty()) {
           val lastSample = samplesForType.last()
 
           // If the last sample's endDate is greater than the new sample's startDate, we have an overlap
-          if (lastSample.endDate.isAfter(newSample.startDate)) {
+          if (lastSample.endDate.isAfter(stage.startDate)) {
             // Full overlap: skip if the last sample's endDate is greater than or equal to the new sample's endDate
-            if (lastSample.endDate.isAfter(newSample.endDate) || lastSample.endDate == newSample.endDate) {
+            if (lastSample.endDate.isAfter(stage.endDate) || lastSample.endDate == stage.endDate) {
               continue
             }
 
             // Partial overlap: Adjust the new sample's startDate to the last sample's startDate
-            newSample = newSample.copy(startDate = lastSample.startDate)
+            newSample = stage.copy(startDate = lastSample.startDate)
             samplesForType.removeLast()
           }
         }
@@ -183,6 +180,11 @@ class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
               else -> {}
             }
           }
+        }
+
+        // If the user has no asleep values then the main value will be the time taken from the in bed times
+        if (sleepValue.fellAsleep == null && sleepValue.wokeUp == null && sleepValue.inBed != null && sleepValue.outOfBed != null) {
+          sleepValue.duration += Duration.between(sleepValue.inBed, sleepValue.outOfBed).seconds
         }
 
         val record = formatSleepRecord(dateKey, getResultType(), sleepValue)
