@@ -160,7 +160,9 @@ fun ReadableMap.getHourFromTimeRange(key: String? = null): Int {
   val startTime =
     if (timeRangeFilter.hasKey(optionKey)) timeRangeFilter.getString(optionKey) else throw Exception("Time range filter should have $optionKey provided")
 
-  val date = LocalDateTime.parse(startTime, DateTimeFormatter.ISO_DATE_TIME)
+  val instant = Instant.parse(startTime)
+  val zoneId = ZoneOffset.systemDefault()
+  val date = LocalDateTime.ofInstant(instant, zoneId)
   return date.hour
 }
 
