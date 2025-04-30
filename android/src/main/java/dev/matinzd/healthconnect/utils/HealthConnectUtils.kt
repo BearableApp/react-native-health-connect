@@ -65,7 +65,10 @@ fun convertJsToRecordTypeSet(readableArray: ReadableArray?): Set<KClass<out Reco
 fun ReadableArray.toMapList(): List<ReadableMap> {
   val list = mutableListOf<ReadableMap>()
   for (i in 0 until size()) {
-    list.add(getMap(i))
+    val map = getMap(i)
+    if (map != null) {
+      list.add(map)
+    }
   }
   return list
 }
