@@ -4,7 +4,6 @@ import type {
   AggregateRecordResult,
   BucketedRecordsResult,
   GetChangesResults,
-  HealthUnit,
   Permission,
   ReadRecordsResult,
   RecordType,
