@@ -3,10 +3,9 @@ import { TurboModuleRegistry } from 'react-native';
 import type {
   AggregateRecordResult,
   BucketedRecordsResult,
-  BucketedRequestOptions,
   GetChangesResults,
+  HealthUnit,
   Permission,
-  ReadRecordsOptions,
   ReadRecordsResult,
   RecordType,
 } from './types';
@@ -24,7 +23,26 @@ export interface Spec extends TurboModule {
   revokeAllPermissions(): Promise<void>;
   readRecords(
     recordType: string,
-    options: ReadRecordsOptions
+    options: {
+      timeRangeFilter:
+        | {
+            operator: 'between';
+            startTime: string;
+            endTime: string;
+          }
+        | {
+            operator: 'after';
+            startTime: string;
+          }
+        | {
+            operator: 'before';
+            endTime: string;
+          };
+      dataOriginFilter?: string[];
+      ascendingOrder?: boolean;
+      pageSize?: number;
+      pageToken?: string;
+    }
   ): Promise<ReadRecordsResult<RecordType>>;
   aggregateRecord(record: {
     recordType: string;
@@ -38,7 +56,24 @@ export interface Spec extends TurboModule {
   }): Promise<GetChangesResults>;
   readBucketedRecords(
     recordType: string,
-    options: BucketedRequestOptions
+    options: {
+      timeRangeFilter:
+        | {
+            operator: 'between';
+            startTime: string;
+            endTime: string;
+          }
+        | {
+            operator: 'after';
+            startTime: string;
+          }
+        | {
+            operator: 'before';
+            endTime: string;
+          };
+      bucketPeriod?: 'day'; // In future 'month' | 'year';
+      unit?: 'celsius' | 'fahrenheit' | 'kg' | 'pound';
+    }
   ): Promise<BucketedRecordsResult>;
 }
 
