@@ -5,10 +5,12 @@ import type {
   BucketedRecordsResult,
   BucketedRequestOptions,
   GetChangesResults,
+  HealthUnit,
   Permission,
   ReadRecordsResult,
   RecordType,
 } from './types';
+import { TimeRangeFilter } from './types/base.types';
 
 export interface Spec extends TurboModule {
   getSdkStatus(providerPackageName: string): Promise<number>;
@@ -24,11 +26,7 @@ export interface Spec extends TurboModule {
   readRecords(
     recordType: string,
     options: {
-      timeRangeFilter: {
-        operator: string;
-        startTime: string;
-        endTime: string;
-      };
+      timeRangeFilter: TimeRangeFilter;
       dataOriginFilter?: string[];
       ascendingOrder?: boolean;
       pageSize?: number;
@@ -47,7 +45,11 @@ export interface Spec extends TurboModule {
   }): Promise<GetChangesResults>;
   readBucketedRecords(
     recordType: string,
-    options: BucketedRequestOptions
+    options: {
+      timeRangeFilter: TimeRangeFilter;
+      bucketPeriod?: 'day'; // In future 'month' | 'year';
+      unit?: HealthUnit;
+    }
   ): Promise<BucketedRecordsResult>;
 }
 
