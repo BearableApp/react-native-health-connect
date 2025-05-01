@@ -3,14 +3,12 @@ import { TurboModuleRegistry } from 'react-native';
 import type {
   AggregateRecordResult,
   BucketedRecordsResult,
-  BucketedRequestOptions,
   GetChangesResults,
   HealthUnit,
   Permission,
   ReadRecordsResult,
   RecordType,
 } from './types';
-import { TimeRangeFilter } from './types/base.types';
 
 export interface Spec extends TurboModule {
   getSdkStatus(providerPackageName: string): Promise<number>;
@@ -26,7 +24,20 @@ export interface Spec extends TurboModule {
   readRecords(
     recordType: string,
     options: {
-      timeRangeFilter: TimeRangeFilter;
+      timeRangeFilter:
+        | {
+            operator: 'between';
+            startTime: string;
+            endTime: string;
+          }
+        | {
+            operator: 'after';
+            startTime: string;
+          }
+        | {
+            operator: 'before';
+            endTime: string;
+          };
       dataOriginFilter?: string[];
       ascendingOrder?: boolean;
       pageSize?: number;
@@ -46,7 +57,20 @@ export interface Spec extends TurboModule {
   readBucketedRecords(
     recordType: string,
     options: {
-      timeRangeFilter: TimeRangeFilter;
+      timeRangeFilter:
+        | {
+            operator: 'between';
+            startTime: string;
+            endTime: string;
+          }
+        | {
+            operator: 'after';
+            startTime: string;
+          }
+        | {
+            operator: 'before';
+            endTime: string;
+          };
       bucketPeriod?: 'day'; // In future 'month' | 'year';
       unit?: HealthUnit;
     }
