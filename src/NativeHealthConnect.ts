@@ -6,7 +6,6 @@ import type {
   BucketedRequestOptions,
   GetChangesResults,
   Permission,
-  ReadRecordsOptions,
   ReadRecordsResult,
   RecordType,
 } from './types';
@@ -24,7 +23,17 @@ export interface Spec extends TurboModule {
   revokeAllPermissions(): Promise<void>;
   readRecords(
     recordType: string,
-    options: ReadRecordsOptions
+    options: {
+      timeRangeFilter: {
+        operator: string;
+        startTime: string;
+        endTime: string;
+      };
+      dataOriginFilter?: string[];
+      ascendingOrder?: boolean;
+      pageSize?: number;
+      pageToken?: string;
+    }
   ): Promise<ReadRecordsResult<RecordType>>;
   aggregateRecord(record: {
     recordType: string;
