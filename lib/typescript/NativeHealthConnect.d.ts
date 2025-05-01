@@ -1,5 +1,5 @@
 import type { TurboModule } from 'react-native';
-import type { AggregateRecordResult, BucketedRecordsResult, BucketedRequestOptions, GetChangesResults, Permission, ReadRecordsOptions, ReadRecordsResult, RecordType } from './types';
+import type { AggregateRecordResult, BucketedRecordsResult, GetChangesResults, Permission, ReadRecordsResult, RecordType } from './types';
 export interface Spec extends TurboModule {
     getSdkStatus(providerPackageName: string): Promise<number>;
     initialize(providerPackageName: string): Promise<boolean>;
@@ -8,7 +8,23 @@ export interface Spec extends TurboModule {
     requestPermission(permissions: Permission[], providerPackageName: string): Promise<Permission[]>;
     getGrantedPermissions(): Promise<Permission[]>;
     revokeAllPermissions(): Promise<void>;
-    readRecords(recordType: string, options: ReadRecordsOptions): Promise<ReadRecordsResult<RecordType>>;
+    readRecords(recordType: string, options: {
+        timeRangeFilter: {
+            operator: 'between';
+            startTime: string;
+            endTime: string;
+        } | {
+            operator: 'after';
+            startTime: string;
+        } | {
+            operator: 'before';
+            endTime: string;
+        };
+        dataOriginFilter?: string[];
+        ascendingOrder?: boolean;
+        pageSize?: number;
+        pageToken?: string;
+    }): Promise<ReadRecordsResult<RecordType>>;
     aggregateRecord(record: {
         recordType: string;
         startTime: string;
@@ -19,7 +35,21 @@ export interface Spec extends TurboModule {
         recordTypes?: string[];
         dataOriginFilters?: string[];
     }): Promise<GetChangesResults>;
-    readBucketedRecords(recordType: string, options: BucketedRequestOptions): Promise<BucketedRecordsResult>;
+    readBucketedRecords(recordType: string, options: {
+        timeRangeFilter: {
+            operator: 'between';
+            startTime: string;
+            endTime: string;
+        } | {
+            operator: 'after';
+            startTime: string;
+        } | {
+            operator: 'before';
+            endTime: string;
+        };
+        bucketPeriod?: 'day';
+        unit?: 'celsius' | 'fahrenheit' | 'kg' | 'pound';
+    }): Promise<BucketedRecordsResult>;
 }
 declare const _default: Spec;
 export default _default;
