@@ -72,7 +72,7 @@ export interface Spec extends TurboModule {
             endTime: string;
           };
       bucketPeriod?: 'day'; // In future 'month' | 'year';
-      unit?: HealthUnit;
+      unit?: 'celsius' | 'fahrenheit' | 'kg' | 'pound';
     }
   ): Promise<BucketedRecordsResult>;
 }
