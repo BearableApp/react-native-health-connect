@@ -129,7 +129,7 @@ class ReactSleepSessionRecord : ReactHealthRecordImpl<SleepSessionRecord> {
 
             // Partial overlap: Adjust the new sample's startDate to the last sample's startDate
             newSample = stage.copy(startDate = lastSample.startDate)
-            samplesForType.removeLast()
+            samplesForType.removeAt(samplesForType.lastIndex)
           }
         }
         samplesForType.add(newSample)
