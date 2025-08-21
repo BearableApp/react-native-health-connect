@@ -2,8 +2,10 @@ package dev.matinzd.healthconnect.records
 
 import androidx.health.connect.client.aggregate.AggregationResult
 import androidx.health.connect.client.aggregate.AggregationResultGroupedByDuration
+import androidx.health.connect.client.aggregate.AggregationResultGroupedByPeriod
 import androidx.health.connect.client.records.HeartRateVariabilityRmssdRecord
 import androidx.health.connect.client.request.AggregateGroupByDurationRequest
+import androidx.health.connect.client.request.AggregateGroupByPeriodRequest
 import androidx.health.connect.client.request.AggregateRequest
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeArray
@@ -29,6 +31,14 @@ class ReactHeartRateVariabilityRmssdRecord :
   }
 
   override fun getAggregateRequest(record: ReadableMap): AggregateRequest {
+    throw AggregationNotSupported()
+  }
+
+  override fun getAggregateGroupByDurationRequest(record: ReadableMap): AggregateGroupByDurationRequest {
+    throw AggregationNotSupported()
+  }
+
+  override fun getAggregateGroupByPeriodRequest(record: ReadableMap): AggregateGroupByPeriodRequest {
     throw AggregationNotSupported()
   }
 
@@ -66,5 +76,13 @@ class ReactHeartRateVariabilityRmssdRecord :
         pushMap(record)
       }
     }
+  }
+
+  override fun parseAggregationResultGroupedByDuration(record: List<AggregationResultGroupedByDuration>): WritableNativeArray {
+    throw AggregationNotSupported()
+  }
+
+  override fun parseAggregationResultGroupedByPeriod(record: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
+    throw AggregationNotSupported()
   }
 }

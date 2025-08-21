@@ -5,7 +5,7 @@ title: Get started
 
 ## Requirements
 
-Make sure you have React Native version 0.71 or higher installed to use v2 of React Native Health Connect.
+Make sure you have React Native version 0.71 or higher **with the latest patch** installed to use v2 of React Native Health Connect.
 
 - [Health Connect](https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata&hl=en&gl=US) needs to be installed on the user's device. Starting from Android 14 (Upside Down Cake), Health Connect is part of the Android Framework. Read more [here](https://developer.android.com/health-and-fitness/guides/health-connect/develop/get-started#step-1).
 - Health Connect API requires `minSdkVersion=26` (Android Oreo / 8.0).
@@ -62,6 +62,42 @@ class MainActivity : ReactActivity() {
 }
 
 ```
+
+If you are using a Java based react native project, please add the following code into your `MainActivity.java` within the `onCreate` method:
+
+```diff
+package com.healthconnectexample
+
++ import android.os.Bundle
+import com.facebook.react.ReactActivity
+import com.facebook.react.ReactActivityDelegate
+import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
+import com.facebook.react.defaults.DefaultReactActivityDelegate
++ import dev.matinzd.healthconnect.permissions.HealthConnectPermissionDelegate
+
+class MainActivity : ReactActivity() {
+  /**
+   * Returns the name of the main component registered from JavaScript. This is used to schedule
+   * rendering of the component.
+   */
+  override fun getMainComponentName(): String = "HealthConnectExample"
+
++ override fun onCreate(savedInstanceState: Bundle?) {
++   super.onCreate(savedInstanceState)
++   // In order to handle permission contract results, we need to set the permission delegate.
++   HealthConnectPermissionDelegate.INSTANCE.setPermissionDelegate(this, "com.google.android.apps.healthdata");
++ }
+
+  /**
+   * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
+   * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
+   */
+  override fun createReactActivityDelegate(): ReactActivityDelegate =
+    DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+}
+
+```
+
 You also need to setup permissions in your `AndroidManifest.xml` file. For more information, check [here](https://matinzd.github.io/react-native-health-connect/docs/permissions).
 
 ## Expo installation

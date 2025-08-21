@@ -28,6 +28,18 @@ export type TimeRangeFilter =
       endTime: string;
     };
 
+// Duration is a fixed length of time in Java (daylight savings are ignored for DAYS)
+export interface DurationRangeSlicer {
+  duration: 'MILLIS' | 'SECONDS' | 'MINUTES' | 'HOURS' | 'DAYS';
+  length: number;
+}
+
+// Period is date-based amount of time in Java
+export interface PeriodRangeSlicer {
+  period: 'DAYS' | 'WEEKS' | 'MONTHS' | 'YEARS';
+  length: number;
+}
+
 export interface Temperature {
   value: number;
   unit: 'celsius' | 'fahrenheit';

@@ -20,15 +20,21 @@ import {
   HealthUnit,
 } from 'react-native-health-connect';
 
-const getLastWeekDate = (): Date => {
-  return new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
+const getBeginningOfLast7Days = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - 7);
+  date.setHours(0, 0, 0, 0);
+  return date;
 };
 
-const getLastTwoWeeksDate = (): Date => {
-  return new Date(new Date().getTime() - 2 * 7 * 24 * 60 * 60 * 1000);
+const getBeginningOfLast14Days = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - 14);
+  date.setHours(0, 0, 0, 0);
+  return date;
 };
 
-const getTodayDate = (): Date => {
+const now = () => {
   return new Date();
 };
 
@@ -116,8 +122,8 @@ export default function App() {
     readRecords(recordType, {
       timeRangeFilter: {
         operator: 'between',
-        startTime: getLastTwoWeeksDate().toISOString(),
-        endTime: getTodayDate().toISOString(),
+        startTime: getBeginningOfLast14Days().toISOString(),
+        endTime: now().toISOString(),
       },
     })
       .then((result) => {
@@ -133,8 +139,8 @@ export default function App() {
       recordType,
       timeRangeFilter: {
         operator: 'between',
-        startTime: getLastWeekDate().toISOString(),
-        endTime: getTodayDate().toISOString(),
+        startTime: getBeginningOfLast7Days().toISOString(),
+        endTime: now().toISOString(),
       },
     }).then((result) => {
       console.log('Aggregated record: ', { result });
@@ -246,5 +252,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     rowGap: 16,
+    padding: 16,
   },
 });
