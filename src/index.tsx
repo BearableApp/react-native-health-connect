@@ -14,8 +14,6 @@ import type {
   GetChangesResults,
   BucketedRequestOptions,
   BucketedRecordsResult,
-  ReadHealthDataHistoryPermission,
-  BackgroundAccessPermission,
   RevokeAllPermissionsResponse,
 } from './types';
 
@@ -98,14 +96,8 @@ export function openHealthConnectDataManagement(
  * @returns granted permissions, including special permissions like WriteExerciseRoutePermission and BackgroundAccessPermission
  */
 export function requestPermission(
-  permissions: (
-    | Permission
-    | BackgroundAccessPermission
-    | ReadHealthDataHistoryPermission
-  )[]
-): Promise<
-  (Permission | ReadHealthDataHistoryPermission | BackgroundAccessPermission)[]
-> {
+  permissions: Permission[]
+): Promise<Permission[]> {
   return HealthConnect.requestPermission(permissions);
 }
 
@@ -114,9 +106,7 @@ export function requestPermission(
  * This includes regular permissions as well as special permissions like WriteExerciseRoutePermission and BackgroundAccessPermission.
  * @returns A promise that resolves to an array of granted permissions
  */
-export function getGrantedPermissions(): Promise<
-  (Permission | BackgroundAccessPermission)[]
-> {
+export function getGrantedPermissions(): Promise<Permission[]> {
   return HealthConnect.getGrantedPermissions();
 }
 

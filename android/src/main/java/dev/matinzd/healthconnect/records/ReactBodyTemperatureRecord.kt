@@ -98,19 +98,6 @@ class ReactBodyTemperatureRecord : ReactHealthRecordImpl<BodyTemperatureRecord> 
     }
   }
 
-  private fun getTemperatureFromJsMap(temperatureMap: ReadableMap?): Temperature {
-    if (temperatureMap == null) {
-      throw InvalidTemperature()
-    }
-
-    val value = temperatureMap.getDouble("value")
-    return when (temperatureMap.getString("unit")) {
-      "fahrenheit" -> Temperature.fahrenheit(value)
-      "celsius" -> Temperature.celsius(value)
-      else -> Temperature.celsius(value)
-    }
-  }
-
   private fun temperatureToJsMap(temperature: Temperature): WritableNativeMap {
     return WritableNativeMap().apply {
       putDouble("inFahrenheit", temperature.inFahrenheit)

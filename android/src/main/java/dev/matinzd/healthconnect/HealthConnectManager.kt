@@ -12,7 +12,6 @@ import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.permissions.HealthConnectPermissionDelegate
 import dev.matinzd.healthconnect.permissions.PermissionUtils
-import dev.matinzd.healthconnect.records.ReactExerciseSessionRecord
 import dev.matinzd.healthconnect.records.ReactHealthRecord
 import dev.matinzd.healthconnect.utils.ClientNotInitialized
 import dev.matinzd.healthconnect.utils.ExerciseRouteAccessDenied
@@ -69,22 +68,6 @@ class HealthConnectManager(private val applicationContext: ReactApplicationConte
       coroutineScope.launch {
         val granted = HealthConnectPermissionDelegate.launchPermissionsDialog(PermissionUtils.parsePermissions(reactPermissions))
         promise.resolve(PermissionUtils.mapPermissionResult(granted))
-      }
-    }
-  }
-
-  fun requestExerciseRoute(
-    recordId: String, promise: Promise
-  ) {
-    throwUnlessClientIsAvailable(promise) {
-      coroutineScope.launch {
-        val exerciseRoute = HealthConnectPermissionDelegate.launchExerciseRouteAccessRequestDialog(recordId)
-        if (exerciseRoute != null) {
-          promise.resolve(ReactExerciseSessionRecord.parseExerciseRoute(exerciseRoute))
-        }
-        else{
-          promise.rejectWithException(ExerciseRouteAccessDenied())
-        }
       }
     }
   }

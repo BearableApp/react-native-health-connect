@@ -1,18 +1,24 @@
 import type { RecordType } from './records.types';
 
-export interface Permission {
+export interface RecordPermission {
   accessType: 'read' | 'write';
   recordType: RecordType;
 }
 
-export interface WriteExerciseRoutePermission {
-  accessType: 'write';
-  recordType: 'ExerciseRoute';
-}
 export interface BackgroundAccessPermission {
   accessType: 'read';
   recordType: 'BackgroundAccessPermission';
 }
+
+export interface ReadHealthDataHistoryPermission {
+  accessType: 'read';
+  recordType: 'ReadHealthDataHistory';
+}
+
+export type Permission =
+  | RecordPermission
+  | BackgroundAccessPermission
+  | ReadHealthDataHistoryPermission;
 
 /**
  * Response from revokeAllPermissions function
@@ -30,11 +36,6 @@ export interface RevokeAllPermissionsResponse {
    * Additional information about the revocation status
    */
   message?: string;
-}
-
-export interface ReadHealthDataHistoryPermission {
-  accessType: 'read';
-  recordType: 'ReadHealthDataHistory';
 }
 
 export * from './records.types';

@@ -35,33 +35,6 @@ const requestPermissions = () => {
 
 ## Special Permissions
 
-### Exercise Route Permission
-
-If your app needs to write exercise routes, you can include it as a special permission:
-
-```ts
-import { requestPermission } from 'react-native-health-connect';
-
-const requestPermissions = () => {
-  requestPermission([
-    {
-      accessType: 'read',
-      recordType: 'ExerciseSession',
-    },
-    {
-      accessType: 'write',
-      recordType: 'ExerciseSession',
-    },
-    {
-      accessType: 'write',
-      recordType: 'ExerciseRoute'
-    }
-  ]).then((permissions) => {
-    console.log('Granted permissions ', { permissions });
-  });
-};
-```
-
 ### Background Access Permission
 
 If your app needs to read health data in the background, you can request the background access permission:

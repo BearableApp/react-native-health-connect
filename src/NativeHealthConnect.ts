@@ -7,16 +7,13 @@ import type {
   Permission,
   ReadRecordsResult,
   RecordType,
-  ReadHealthDataHistoryPermission,
 } from './types';
 export interface Spec extends TurboModule {
   getSdkStatus(providerPackageName: string): Promise<number>;
   initialize(providerPackageName: string): Promise<boolean>;
   openHealthConnectSettings: () => void;
   openHealthConnectDataManagement: (providerPackageName?: string) => void;
-  requestPermission(
-    permissions: (Permission | ReadHealthDataHistoryPermission)[]
-  ): Promise<Permission[]>;
+  requestPermission(permissions: Permission[]): Promise<Permission[]>;
   getGrantedPermissions(): Promise<Permission[]>;
   revokeAllPermissions(): Promise<void>;
   readRecords(

@@ -18,6 +18,7 @@ import {
   AggregateResultRecordType,
   readBucketedRecords,
   HealthUnit,
+  RecordPermission,
 } from 'react-native-health-connect';
 
 const getBeginningOfLast7Days = () => {
@@ -38,7 +39,7 @@ const now = () => {
   return new Date();
 };
 
-const availableRecordTypes: Permission[] = [
+const availableRecordTypes: RecordPermission[] = [
   {
     recordType: 'BloodPressure',
     accessType: 'read',
@@ -148,7 +149,15 @@ export default function App() {
   };
 
   const requestSamplePermissions = () => {
-    requestPermission(availableRecordTypes).then((permissions) => {
+    const allPermissions: Permission[] = [
+      ...availableRecordTypes,
+      {
+        recordType: 'ReadHealthDataHistory',
+        accessType: 'read',
+      },
+    ];
+
+    requestPermission(allPermissions).then((permissions) => {
       console.log('Granted permissions on request ', { permissions });
     });
   };
@@ -166,6 +175,39 @@ export default function App() {
     try {
       const startTime = moment().subtract(1, 'week').startOf('day');
       const endTime = moment().endOf('day');
+
+      const result = await readBucketedRecords(recordType, {
+        timeRangeFilter: {
+          operator: 'between',
+          startTime:
+            recordType === 'SleepSession'
+              ? startTime.subtract(12, 'h').toISOString()
+              : startTime.toISOString(),
+          endTime:
+            recordType === 'SleepSession'
+              ? endTime.subtract(12, 'h').toISOString()
+              : endTime.toISOString(),
+        },
+        unit,
+      });
+
+      console.log('result', result);
+      Alert.alert(
+        'Bucketed records',
+        result.map((r) => `${r.dateKey} - ${r.entry.value}`).join('\n')
+      );
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const readHistoricData = async (
+    recordType: RecordType,
+    unit?: HealthUnit
+  ) => {
+    try {
+      const startTime = moment().subtract(3, 'month').startOf('day');
+      const endTime = moment().subtract(3, 'month').endOf('day');
 
       const result = await readBucketedRecords(recordType, {
         timeRangeFilter: {
@@ -222,6 +264,12 @@ export default function App() {
           onPress={() => getBucketedRecords(type, units)}
         />
       ))}
+
+      <Text>Reading historic data</Text>
+      <Button
+        title="Read steps 3 months ago"
+        onPress={() => readHistoricData('Steps')}
+      />
 
       <Text>Reading data</Text>
 

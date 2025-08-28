@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.health.READ_HEART_RATE_VARIABILITY"/>
     <uses-permission android:name="android.permission.health.READ_SLEEP"/>
     <uses-permission android:name="android.permission.health.READ_WEIGHT"/>
+    <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"/>
 
     <application
       android:name=".MainApplication"

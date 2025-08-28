@@ -190,17 +190,3 @@ requestPermission([
 Under the hood, this maps to `HealthPermission.PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND` in the Android Health Connect API.
 
 See the [Background Access Permission](./api/methods/17-backgroundAccessPermission.md) documentation for more details.
-
-### Exercise Route Permission
-
-This special permission is required to write exercise routes:
-
-```ts
-requestPermission([
-  {
-    accessType: 'write',
-    recordType: 'ExerciseRoute',
-  },
-  // Other permissions...
-]);
-```

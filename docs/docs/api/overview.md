@@ -5,7 +5,6 @@ title: Overview
 
 ## Available methods
 
-<<<<<<< HEAD
 | **Method**                      | **Description**                                                                                                                                                                                           |
 | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | getSdkStatus                    | Determines whether an implementation of HealthConnectClient is available on the device at the moment. If none is available, apps may choose to redirect to package installers to find suitable providers. |
@@ -18,27 +17,3 @@ title: Overview
 | readRecords                     | Retrieves a collection of records.                                                                                                                                                                        |
 | aggregateRecord                 | Reads aggregated results according to requested read criteria, for e.g, data origin filter and within a time range.                                                                                       |
 | readBucketedRecords             | Reads records between a start and end time that are bucketed into days.                                                                                                                                   |
-=======
-| **Method**                | **Description**                                                                                                                                                                                                                           |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| getSdkStatus              | Determines whether an implementation of HealthConnectClient is available on the device at the moment. If none is available, apps may choose to redirect to package installers to find suitable providers.                                 |
-| initialize                | Initialize the health connect client.                                                                                                                                                                                                     |
-| openHealthConnectSettings | Opens Health Connect app's settings app.                                                                                                                                                                                                  |
-| openHealthConnectDataManagement | Opens Health Connect data management screen app.                                                                                                                                                                                                  |
-| requestPermission         | Request permission for specified record types and access types.                                                                                                                                                                           |
-| getGrantedPermissions     | Returns a set of all health permissions granted by the user to the calling provider app.                                                                                                                                                  |
-| revokeAllPermissions      | Revokes all previously granted permissions by the user to the calling app.                                                                                                                                                                |
-| insertRecords             | Inserts one or more records and returns newly assigned generated UUIDs. Insertion of multiple records is executed in a transaction - if one fails, none is inserted.                                                                      |
-| readRecords               | Retrieves a collection of records.                                                                                                                                                                                                        |
-| readRecord               | Retrieves a single record of the specified type.                                                                                                                                                                                                        |
-| aggregateRecord           | Reads aggregated results according to requested read criteria, for e.g, data origin filter and within a time range.                                                                                                                       |
-| deleteRecordsByUuids      | Deletes one or more records by their identifiers. Deletion of multiple records is executed in a single transaction - if one fails, none is deleted.                                                                                       |
-| deleteRecordsByTimeRange  | Deletes any record of the given record type in the given time range (automatically filtered to a record belonging to the calling application). Deletion of multiple records is executed in a transaction - if one fails, none is deleted. |
-| requestExerciseRoute | Requests permission to access exercise route data for a specific exercise session. |
-
-## Special Permissions
-
-| **Permission Type**        | **Description**                                                                                                                                                                                                                           |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| BackgroundAccessPermission | Allows your app to read health data in the background, even when your app is not in the foreground. |
->>>>>>> 4ddb0dad2ba46fb7b5f7781115c79b378730bc65

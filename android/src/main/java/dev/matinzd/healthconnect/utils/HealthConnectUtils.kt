@@ -14,7 +14,6 @@ import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.records.*
 import java.text.DecimalFormat
-import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
