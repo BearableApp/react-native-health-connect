@@ -20,6 +20,14 @@ export type TimeRangeFilter = {
     operator: 'before';
     endTime: string;
 };
+export interface DurationRangeSlicer {
+    duration: 'MILLIS' | 'SECONDS' | 'MINUTES' | 'HOURS' | 'DAYS';
+    length: number;
+}
+export interface PeriodRangeSlicer {
+    period: 'DAYS' | 'WEEKS' | 'MONTHS' | 'YEARS';
+    length: number;
+}
 export interface Temperature {
     value: number;
     unit: 'celsius' | 'fahrenheit';

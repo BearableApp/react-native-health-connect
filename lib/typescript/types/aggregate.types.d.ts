@@ -1,4 +1,4 @@
-import type { MassResult, PressureResult, TimeRangeFilter } from './base.types';
+import type { MassResult, PressureResult, TimeRangeFilter, DurationRangeSlicer, PeriodRangeSlicer } from './base.types';
 export type HealthUnit = 'celsius' | 'fahrenheit' | 'kg' | 'pound';
 interface BaseAggregate {
     dataOrigins: string[];
@@ -40,9 +40,6 @@ interface SleepSessionAggregateResult extends BaseAggregate {
 }
 export type AggregateRecordResult = BloodPressureAggregateResult | HeartRateAggregateResult | RestingHeartRateAggregateResult | StepsAggregateResult | WeightAggregateResult | SleepSessionAggregateResult;
 export type AggregateResultRecordType = AggregateRecordResult['recordType'];
-export type AggregateResult<T extends AggregateResultRecordType> = Omit<Extract<AggregateRecordResult, {
-    recordType: T;
-}>, 'recordType'>;
 export interface AggregateRequest<T extends AggregateResultRecordType> {
     recordType: T;
     timeRangeFilter: TimeRangeFilter;
@@ -52,6 +49,26 @@ export interface BucketedRequestOptions {
     timeRangeFilter: TimeRangeFilter;
     bucketPeriod?: 'day';
     unit?: HealthUnit;
+}
+export type AggregateResult<T extends AggregateResultRecordType> = Omit<Extract<AggregateRecordResult, {
+    recordType: T;
+}>, 'recordType'>;
+export interface AggregateGroupByDurationRequest<T extends AggregateResultRecordType> {
+    recordType: T;
+    timeRangeFilter: TimeRangeFilter;
+    timeRangeSlicer: DurationRangeSlicer;
+    dataOriginFilter?: string[];
+}
+export interface AggregateGroupByPeriodRequest<T extends AggregateResultRecordType> {
+    recordType: T;
+    timeRangeFilter: TimeRangeFilter;
+    timeRangeSlicer: PeriodRangeSlicer;
+    dataOriginFilter?: string[];
+}
+export interface AggregationGroupResult<T extends AggregateResultRecordType> {
+    result: AggregateResult<T>;
+    startTime: string;
+    endTime: string;
 }
 export {};
 //# sourceMappingURL=aggregate.types.d.ts.map

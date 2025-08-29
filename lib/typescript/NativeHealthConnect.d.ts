@@ -5,7 +5,7 @@ export interface Spec extends TurboModule {
     initialize(providerPackageName: string): Promise<boolean>;
     openHealthConnectSettings: () => void;
     openHealthConnectDataManagement: (providerPackageName?: string) => void;
-    requestPermission(permissions: Permission[], providerPackageName: string): Promise<Permission[]>;
+    requestPermission(permissions: Permission[]): Promise<Permission[]>;
     getGrantedPermissions(): Promise<Permission[]>;
     revokeAllPermissions(): Promise<void>;
     readRecords(recordType: string, options: {
@@ -30,6 +30,18 @@ export interface Spec extends TurboModule {
         startTime: string;
         endTime: string;
     }): Promise<AggregateRecordResult>;
+    aggregateGroupByDuration(record: {
+        recordType: string;
+        startTime: string;
+        endTime: string;
+        timeRangeSlicer: Object;
+    }): Promise<[]>;
+    aggregateGroupByPeriod(record: {
+        recordType: string;
+        startTime: string;
+        endTime: string;
+        timeRangeSlicer: Object;
+    }): Promise<[]>;
     getChanges(request: {
         changesToken?: string;
         recordTypes?: string[];

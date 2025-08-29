@@ -1,1 +1,1 @@
-{"version":3,"names":["TurboModuleRegistry","getEnforcing"],"sourceRoot":"../../src","sources":["NativeHealthConnect.ts"],"mappings":"AACA,SAASA,mBAAmB,QAAQ,cAAc;AA6ElD,eAAeA,mBAAmB,CAACC,YAAY,CAAO,eAAe,CAAC"}
+{"version":3,"names":["TurboModuleRegistry","getEnforcing"],"sourceRoot":"../../src","sources":["NativeHealthConnect.ts"],"mappings":"AACA,SAASA,mBAAmB,QAAQ,cAAc;AAqFlD,eAAeA,mBAAmB,CAACC,YAAY,CAAO,eAAe,CAAC","ignoreList":[]}
