@@ -2,6 +2,9 @@ import { NativeModules, Platform } from 'react-native';
 import type {
   AggregateRequest,
   AggregateResult,
+  AggregateGroupByDurationRequest,
+  AggregateGroupByPeriodRequest,
+  AggregationGroupResult,
   AggregateResultRecordType,
   Permission,
   ReadRecordsOptions,
@@ -11,6 +14,7 @@ import type {
   GetChangesResults,
   BucketedRequestOptions,
   BucketedRecordsResult,
+  RevokeAllPermissionsResponse,
 } from './types';
 
 const LINKING_ERROR =
@@ -89,20 +93,30 @@ export function openHealthConnectDataManagement(
 /**
  * Request permissions to access Health Connect data
  * @param permissions list of permissions to request
- * @returns granted permissions
+ * @returns granted permissions, including special permissions like WriteExerciseRoutePermission and BackgroundAccessPermission
  */
 export function requestPermission(
-  permissions: Permission[],
-  providerPackageName = DEFAULT_PROVIDER_PACKAGE_NAME
+  permissions: Permission[]
 ): Promise<Permission[]> {
-  return HealthConnect.requestPermission(permissions, providerPackageName);
+  return HealthConnect.requestPermission(permissions);
 }
 
+/**
+ * Returns a set of all health permissions granted by the user to the calling app.
+ * This includes regular permissions as well as special permissions like WriteExerciseRoutePermission and BackgroundAccessPermission.
+ * @returns A promise that resolves to an array of granted permissions
+ */
 export function getGrantedPermissions(): Promise<Permission[]> {
   return HealthConnect.getGrantedPermissions();
 }
 
-export function revokeAllPermissions(): void {
+/**
+ * Revokes all previously granted permissions by the user to the calling app.
+ * On Android 14+, permissions are not immediately revoked. They will be revoked when the app restarts.
+ * @returns A promise that resolves to a RevokeAllPermissionsResponse object containing information about the revocation status,
+ * or void for backward compatibility with older versions
+ */
+export function revokeAllPermissions(): Promise<RevokeAllPermissionsResponse | void> {
   return HealthConnect.revokeAllPermissions();
 }
 
@@ -118,6 +132,18 @@ export function aggregateRecord<T extends AggregateResultRecordType>(
 ): Promise<AggregateResult<T>> {
   // TODO: Handle blood pressure aggregate only available on Android 15+
   return HealthConnect.aggregateRecord(request);
+}
+
+export function aggregateGroupByDuration<T extends AggregateResultRecordType>(
+  request: AggregateGroupByDurationRequest<T>
+): Promise<AggregationGroupResult<T>[]> {
+  return HealthConnect.aggregateGroupByDuration(request);
+}
+
+export function aggregateGroupByPeriod<T extends AggregateResultRecordType>(
+  request: AggregateGroupByPeriodRequest<T>
+): Promise<AggregationGroupResult<T>[]> {
+  return HealthConnect.aggregateGroupByPeriod(request);
 }
 
 export function getChanges(

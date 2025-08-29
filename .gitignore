@@ -70,3 +70,5 @@ android/keystores/debug.keystore
 .metro-health-check*
 *.keystore
 !debug.keystore
+
+.yarn

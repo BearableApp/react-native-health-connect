@@ -18,21 +18,28 @@ import {
   AggregateResultRecordType,
   readBucketedRecords,
   HealthUnit,
+  RecordPermission,
 } from 'react-native-health-connect';
 
-const getLastWeekDate = (): Date => {
-  return new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
+const getBeginningOfLast7Days = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - 7);
+  date.setHours(0, 0, 0, 0);
+  return date;
 };
 
-const getLastTwoWeeksDate = (): Date => {
-  return new Date(new Date().getTime() - 2 * 7 * 24 * 60 * 60 * 1000);
+const getBeginningOfLast14Days = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - 14);
+  date.setHours(0, 0, 0, 0);
+  return date;
 };
 
-const getTodayDate = (): Date => {
+const now = () => {
   return new Date();
 };
 
-const availableRecordTypes: Permission[] = [
+const availableRecordTypes: RecordPermission[] = [
   {
     recordType: 'BloodPressure',
     accessType: 'read',
@@ -116,8 +123,8 @@ export default function App() {
     readRecords(recordType, {
       timeRangeFilter: {
         operator: 'between',
-        startTime: getLastTwoWeeksDate().toISOString(),
-        endTime: getTodayDate().toISOString(),
+        startTime: getBeginningOfLast14Days().toISOString(),
+        endTime: now().toISOString(),
       },
     })
       .then((result) => {
@@ -133,8 +140,8 @@ export default function App() {
       recordType,
       timeRangeFilter: {
         operator: 'between',
-        startTime: getLastWeekDate().toISOString(),
-        endTime: getTodayDate().toISOString(),
+        startTime: getBeginningOfLast7Days().toISOString(),
+        endTime: now().toISOString(),
       },
     }).then((result) => {
       console.log('Aggregated record: ', { result });
@@ -142,7 +149,15 @@ export default function App() {
   };
 
   const requestSamplePermissions = () => {
-    requestPermission(availableRecordTypes).then((permissions) => {
+    const allPermissions: Permission[] = [
+      ...availableRecordTypes,
+      {
+        recordType: 'ReadHealthDataHistory',
+        accessType: 'read',
+      },
+    ];
+
+    requestPermission(allPermissions).then((permissions) => {
       console.log('Granted permissions on request ', { permissions });
     });
   };
@@ -160,6 +175,39 @@ export default function App() {
     try {
       const startTime = moment().subtract(1, 'week').startOf('day');
       const endTime = moment().endOf('day');
+
+      const result = await readBucketedRecords(recordType, {
+        timeRangeFilter: {
+          operator: 'between',
+          startTime:
+            recordType === 'SleepSession'
+              ? startTime.subtract(12, 'h').toISOString()
+              : startTime.toISOString(),
+          endTime:
+            recordType === 'SleepSession'
+              ? endTime.subtract(12, 'h').toISOString()
+              : endTime.toISOString(),
+        },
+        unit,
+      });
+
+      console.log('result', result);
+      Alert.alert(
+        'Bucketed records',
+        result.map((r) => `${r.dateKey} - ${r.entry.value}`).join('\n')
+      );
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const readHistoricData = async (
+    recordType: RecordType,
+    unit?: HealthUnit
+  ) => {
+    try {
+      const startTime = moment().subtract(3, 'month').startOf('day');
+      const endTime = moment().subtract(3, 'month').endOf('day');
 
       const result = await readBucketedRecords(recordType, {
         timeRangeFilter: {
@@ -217,6 +265,12 @@ export default function App() {
         />
       ))}
 
+      <Text>Reading historic data</Text>
+      <Button
+        title="Read steps 3 months ago"
+        onPress={() => readHistoricData('Steps')}
+      />
+
       <Text>Reading data</Text>
 
       {availableRecordTypes.map(({ recordType }) => (
@@ -246,5 +300,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     rowGap: 16,
+    padding: 16,
   },
 });

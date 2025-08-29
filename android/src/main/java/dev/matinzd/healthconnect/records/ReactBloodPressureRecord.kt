@@ -2,9 +2,10 @@ package dev.matinzd.healthconnect.records
 
 import androidx.health.connect.client.aggregate.AggregationResult
 import androidx.health.connect.client.aggregate.AggregationResultGroupedByDuration
+import androidx.health.connect.client.aggregate.AggregationResultGroupedByPeriod
 import androidx.health.connect.client.records.BloodPressureRecord
-import androidx.health.connect.client.records.HeartRateVariabilityRmssdRecord
 import androidx.health.connect.client.request.AggregateGroupByDurationRequest
+import androidx.health.connect.client.request.AggregateGroupByPeriodRequest
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.units.Pressure
 import com.facebook.react.bridge.ReadableMap
@@ -16,6 +17,15 @@ class ReactBloodPressureRecord : ReactHealthRecordImpl<BloodPressureRecord> {
   override fun getResultType(): String {
     return "PRESSURE"
   }
+
+  private val aggregateMetrics = setOf(
+    BloodPressureRecord.SYSTOLIC_AVG,
+    BloodPressureRecord.SYSTOLIC_MIN,
+    BloodPressureRecord.SYSTOLIC_MAX,
+    BloodPressureRecord.DIASTOLIC_AVG,
+    BloodPressureRecord.DIASTOLIC_MIN,
+    BloodPressureRecord.DIASTOLIC_MAX
+  )
 
   override fun parseRecord(record: BloodPressureRecord): WritableNativeMap {
     return WritableNativeMap().apply {
@@ -30,15 +40,26 @@ class ReactBloodPressureRecord : ReactHealthRecordImpl<BloodPressureRecord> {
 
   override fun getAggregateRequest(record: ReadableMap): AggregateRequest {
     return AggregateRequest(
-      metrics = setOf(
-        BloodPressureRecord.SYSTOLIC_AVG,
-        BloodPressureRecord.SYSTOLIC_MIN,
-        BloodPressureRecord.SYSTOLIC_MAX,
-        BloodPressureRecord.DIASTOLIC_AVG,
-        BloodPressureRecord.DIASTOLIC_MIN,
-        BloodPressureRecord.DIASTOLIC_MAX
-      ),
+      metrics = aggregateMetrics,
       timeRangeFilter = record.getTimeRangeFilter("timeRangeFilter"),
+      dataOriginFilter = convertJsToDataOriginSet(record.getArray("dataOriginFilter"))
+    )
+  }
+
+  override fun getAggregateGroupByDurationRequest(record: ReadableMap): AggregateGroupByDurationRequest {
+    return AggregateGroupByDurationRequest(
+      metrics = aggregateMetrics,
+      timeRangeFilter = record.getTimeRangeFilter("timeRangeFilter"),
+      timeRangeSlicer = mapJsDurationToDuration(record.getMap("timeRangeSlicer")),
+      dataOriginFilter = convertJsToDataOriginSet(record.getArray("dataOriginFilter"))
+    )
+  }
+
+  override fun getAggregateGroupByPeriodRequest(record: ReadableMap): AggregateGroupByPeriodRequest {
+    return AggregateGroupByPeriodRequest(
+      metrics = aggregateMetrics,
+      timeRangeFilter = record.getTimeRangeFilter("timeRangeFilter"),
+      timeRangeSlicer = mapJsPeriodToPeriod(record.getMap("timeRangeSlicer")),
       dataOriginFilter = convertJsToDataOriginSet(record.getArray("dataOriginFilter"))
     )
   }
@@ -103,6 +124,33 @@ class ReactBloodPressureRecord : ReactHealthRecordImpl<BloodPressureRecord> {
 
         val record = formatRecord(dateKey, getResultType(), value)
         pushMap(record)
+      }
+    }
+  }
+
+  override fun parseAggregationResultGroupedByDuration(record: List<AggregationResultGroupedByDuration>): WritableNativeArray {
+    return WritableNativeArray().apply {
+      record.forEach {
+        val map = WritableNativeMap().apply {
+          putMap("result", parseAggregationResult(it.result))
+          putString("startTime", it.startTime.toString())
+          putString("endTime", it.endTime.toString())
+          putString("zoneOffset", it.zoneOffset.toString())
+        }
+        pushMap(map)
+      }
+    }
+  }
+
+  override fun parseAggregationResultGroupedByPeriod(record: List<AggregationResultGroupedByPeriod>): WritableNativeArray {
+    return WritableNativeArray().apply {
+      record.forEach {
+        val map = WritableNativeMap().apply {
+          putMap("result", parseAggregationResult(it.result))
+          putString("startTime", it.startTime.toString())
+          putString("endTime", it.endTime.toString())
+        }
+        pushMap(map)
       }
     }
   }

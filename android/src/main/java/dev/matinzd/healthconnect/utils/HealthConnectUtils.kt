@@ -14,12 +14,13 @@ import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import dev.matinzd.healthconnect.records.*
 import java.text.DecimalFormat
-import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.Duration
+import java.time.Period
 import kotlin.reflect.KClass
 
 fun <T : Record> convertReactRequestOptionsFromJS(
@@ -65,9 +66,9 @@ fun convertJsToRecordTypeSet(readableArray: ReadableArray?): Set<KClass<out Reco
 fun ReadableArray.toMapList(): List<ReadableMap> {
   val list = mutableListOf<ReadableMap>()
   for (i in 0 until size()) {
-    val map = getMap(i)
-    if (map != null) {
-      list.add(map)
+    val item = getMap(i)
+    if (null != item) {
+      list.add(item)
     }
   }
   return list
@@ -349,4 +350,33 @@ fun convertChangesTokenRequestOptionsFromJS(options: ReadableMap): ChangesTokenR
     recordTypes = convertJsToRecordTypeSet(options.getArray("recordTypes")),
     dataOriginFilters = convertJsToDataOriginSet(options.getArray("dataOriginFilters")),
   )
+}
+
+fun mapJsDurationToDuration(duration: ReadableMap?): Duration {
+  if (duration == null) {
+    return Duration.ofDays(0)
+  }
+  val length = duration.getInt("length").toLong()
+  return when (duration.getString("duration")) {
+    "MILLIS" -> Duration.ofMillis(length)
+    "SECONDS" -> Duration.ofSeconds(length)
+    "MINUTES" -> Duration.ofMinutes(length)
+    "HOURS" -> Duration.ofHours(length)
+    "DAYS" -> Duration.ofDays(length)
+    else -> Duration.ofDays(length)
+  }
+}
+
+fun mapJsPeriodToPeriod(period: ReadableMap?): Period {
+  if (period == null) {
+    return Period.ofDays(0)
+  }
+  val length = period.getInt("length")
+  return when (period.getString("period")) {
+    "DAYS" -> Period.ofDays(length)
+    "WEEKS" -> Period.ofWeeks(length)
+    "MONTHS" -> Period.ofMonths(length)
+    "YEARS" -> Period.ofYears(length)
+    else -> Period.ofDays(length)
+  }
 }

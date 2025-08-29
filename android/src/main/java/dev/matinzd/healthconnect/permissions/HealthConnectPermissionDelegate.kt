@@ -10,9 +10,10 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 
 object HealthConnectPermissionDelegate {
-  private lateinit var requestPermission: ActivityResultLauncher<Set<String>>
-  private val channel = Channel<Set<String>>()
   private val coroutineScope = CoroutineScope(Dispatchers.IO)
+  private val permissionsChannel = Channel<Set<String>>()
+
+  private lateinit var requestPermission: ActivityResultLauncher<Set<String>>
 
   fun setPermissionDelegate(
     activity: ComponentActivity,
@@ -22,14 +23,14 @@ object HealthConnectPermissionDelegate {
 
     requestPermission = activity.registerForActivityResult(contract) {
       coroutineScope.launch {
-        channel.send(it)
+        permissionsChannel.send(it)
         coroutineContext.cancel()
       }
     }
   }
 
-  suspend fun launch(permissions: Set<String>): Set<String> {
+  suspend fun launchPermissionsDialog(permissions: Set<String>): Set<String> {
     requestPermission.launch(permissions)
-    return channel.receive()
+    return permissionsChannel.receive()
   }
 }
