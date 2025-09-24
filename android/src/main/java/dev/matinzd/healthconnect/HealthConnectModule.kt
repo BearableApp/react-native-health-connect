@@ -80,7 +80,7 @@ class HealthConnectModule internal constructor(context: ReactApplicationContext)
   }
 
   @ReactMethod
-  override fun readManuallyBucketedRecords(recordType: String, options: ReadableMap, promise: Promise) {
+  fun readManuallyBucketedRecords(recordType: String, options: ReadableMap, promise: Promise) {
     return manager.readManuallyBucketedRecords(recordType, options, promise)
   }
 
