@@ -82,6 +82,27 @@ export interface Spec extends TurboModule {
       unit?: 'celsius' | 'fahrenheit' | 'kg' | 'pound';
     }
   ): Promise<BucketedRecordsResult>;
+  readManuallyBucketedRecords(
+    recordType: string,
+    options: {
+      timeRangeFilter:
+        | {
+            operator: 'between';
+            startTime: string;
+            endTime: string;
+          }
+        | {
+            operator: 'after';
+            startTime: string;
+          }
+        | {
+            operator: 'before';
+            endTime: string;
+          };
+      bucketPeriod?: 'day'; // In future 'month' | 'year';
+      unit?: 'celsius' | 'fahrenheit' | 'kg' | 'pound';
+    }
+  ): Promise<BucketedRecordsResult>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('HealthConnect');
