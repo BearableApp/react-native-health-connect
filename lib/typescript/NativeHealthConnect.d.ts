@@ -62,6 +62,21 @@ export interface Spec extends TurboModule {
         bucketPeriod?: 'day';
         unit?: 'celsius' | 'fahrenheit' | 'kg' | 'pound';
     }): Promise<BucketedRecordsResult>;
+    readManuallyBucketedRecords(recordType: string, options: {
+        timeRangeFilter: {
+            operator: 'between';
+            startTime: string;
+            endTime: string;
+        } | {
+            operator: 'after';
+            startTime: string;
+        } | {
+            operator: 'before';
+            endTime: string;
+        };
+        bucketPeriod?: 'day';
+        unit?: 'celsius' | 'fahrenheit' | 'kg' | 'pound';
+    }): Promise<BucketedRecordsResult>;
 }
 declare const _default: Spec;
 export default _default;
