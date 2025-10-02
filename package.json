@@ -164,5 +164,8 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "dependencies": {
+    "moment": "^2.30.1"
   }
 }
